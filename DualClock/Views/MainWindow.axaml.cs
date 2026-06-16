@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using DualClock.Moduls;
 using System;
 using System.ComponentModel;
 using System.Globalization;

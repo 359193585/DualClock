@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
 
-namespace DualClock
+namespace DualClock.Moduls
 {
     public class TimeZoneItem
     {
@@ -47,7 +47,6 @@ namespace DualClock
         new TimeZoneItem { TagValue = "New Zealand Standard Time|Pacific/Auckland|奥克兰", DisplayName = "奥克兰 (新西兰)" }
     };
 
-        // 静态加载
         public static ClockConfig Load()
         {
             if (File.Exists(ConfigPath))
@@ -62,7 +61,6 @@ namespace DualClock
             return new ClockConfig();
         }
 
-        // 保存
         public void Save()
         {
             try

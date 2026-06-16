@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using DualClock.Moduls;
 using System;
 
 namespace DualClock;

@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:DualClock"
+        xmlns:modules="using:DualClock.Moduls"
         x:Class="DualClock.SettingsWindow"
         x:DataType="local:SettingsWindow"
         Title="时区设置" 
@@ -8,14 +9,20 @@
         WindowStartupLocation="CenterOwner"
         Background="#222222">
     
+    <Window.Styles>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#555555" /> </Style>
+    </Window.Styles>
+
     <StackPanel Margin="20" Spacing="15">
         <TextBlock Text="选择时区 1 (上方显示):" Foreground="White"/>
 
         <ComboBox Name="ComboZone1" 
-                  ItemsSource="{x:Static local:ClockConfig.AllZones}" 
+                  ItemsSource="{x:Static modules:ClockConfig.AllZones}" 
                   HorizontalAlignment="Stretch" Foreground="White">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:TimeZoneItem">
+                <DataTemplate x:DataType="local:Moduls.TimeZoneItem">
                     <TextBlock Text="{Binding DisplayName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -24,10 +31,10 @@
         <TextBlock Text="选择时区 2 (下方显示):" Foreground="White" Margin="0,10,0,0"/>
 
         <ComboBox Name="ComboZone2" 
-                  ItemsSource="{x:Static local:ClockConfig.AllZones}" 
+                  ItemsSource="{x:Static modules:ClockConfig.AllZones}" 
                   HorizontalAlignment="Stretch" Foreground="White">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:TimeZoneItem">
+                <DataTemplate x:DataType="local:Moduls.TimeZoneItem">
                     <TextBlock Text="{Binding DisplayName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
