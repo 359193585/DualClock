@@ -1,25 +1,30 @@
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Threading;
+using System.Text.Json;
 
 namespace DualClock;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    // 5 个文本对应的后台字段
-    private string _sfTimeDisplay = "旧金山: 00:00:00";
+    private string _sfTimeDisplay = "Loading...";
     private string _sfDateDisplay = "Loading...";
-    private string _bjTimeDisplay = "北京: 00:00:00";
+    private string _bjTimeDisplay = "Loading...";
     private string _bjDateDisplay = "Loading...";
     private string _localTimeDisplay = "Local: 00:00:00";
 
-    private readonly TimeZoneInfo _sfTimeZone;
-    private readonly TimeZoneInfo _beijingTimeZone;
+    private TimeZoneInfo _timeZone1 = TimeZoneInfo.Utc;
+    private TimeZoneInfo _timeZone2 = TimeZoneInfo.Utc;
+    private string _label1 = "Zone 1";
+    private string _label2 = "Zone 2";
+
 
     public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -58,15 +63,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public MainWindow()
     {
         InitializeComponent();
-
-        _sfTimeZone = GetTimeZoneById("Pacific Standard Time", "America/Los_Angeles");
-        _beijingTimeZone = GetTimeZoneById("China Standard Time", "Asia/Shanghai");
-
         DataContext = this;
+
+        LoadConfig();
 
         if (!Design.IsDesignMode)
         {
             Cursor = new Cursor(StandardCursorType.None);
+            
             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += (s, e) => RefreshClocks();
             timer.Start();
@@ -83,26 +87,52 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             LocalTimeDisplay = "本地时间: 2026-06-15 15:00:00";
         }
     }
+    private void OnContextMenuOpened(object? sender, RoutedEventArgs e)
+    {
+        // 菜单弹出时，立刻恢复默认鼠标指针，让用户在全屏下也能看清并操作菜单
+        Cursor = Cursor.Default;
+    }
+    private void LoadConfig()
+    {
+        var config = ClockConfig.Load();
 
+        _timeZone1 = GetTimeZoneById(config.TimeZone1_WinId, config.TimeZone1_IanaId);
+        _timeZone2 = GetTimeZoneById(config.TimeZone2_WinId, config.TimeZone2_IanaId);
+        _label1 = config.TimeZone1_Label;
+        _label2 = config.TimeZone2_Label;
+    }
     private void RefreshClocks()
     {
         DateTime utcNow = DateTime.UtcNow;
-        DateTime localNow = DateTime.Now; 
+        DateTime localNow = DateTime.Now;
 
-        DateTime sfLocal = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _sfTimeZone);
-        DateTime bjLocal = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _beijingTimeZone);
+        DateTime t1 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone1);
+        DateTime t2 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone2);
 
-        SfTimeDisplay = $"SF: {sfLocal:HH:mm:ss}";
-        BjTimeDisplay = $"BJ: {bjLocal:HH:mm:ss}";
+        SfTimeDisplay = $"{_label1}: {t1:HH:mm:ss}";
+        BjTimeDisplay = $"{_label2}: {t2:HH:mm:ss}";
 
-        // 指定 CultureInfo("zh-CN") 确保在任何系统语言下都强制输出中文的“星期几”
         var culture = new CultureInfo("zh-CN");
-        SfDateDisplay = sfLocal.ToString("MM月dd日 dddd", culture);
-        BjDateDisplay = bjLocal.ToString("MM月dd日 dddd", culture);
+        SfDateDisplay = t1.ToString("MM月dd日 dddd", culture);
+        BjDateDisplay = t2.ToString("MM月dd日 dddd", culture);
 
         LocalTimeDisplay = $"本地时间: {localNow:yyyy-MM-dd HH:mm:ss}";
     }
+    private void OpenSettings(object sender, RoutedEventArgs e)
+    {
+        Cursor = Cursor.Default;
 
+        var settingsWin = new SettingsWindow();
+        settingsWin.ConfigUpdated += () => {
+            LoadConfig();      
+            RefreshClocks();   
+        };
+        settingsWin.ShowDialog(this);
+        settingsWin.Closed += (s, ev) => {
+            if (WindowState == WindowState.FullScreen) Cursor = new Cursor(StandardCursorType.None);
+        };
+    }
+    private void MenuClose(object sender, RoutedEventArgs e) => Close();
     private static TimeZoneInfo GetTimeZoneById(string windowsId, string ianaId)
     {
         string id = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? windowsId : ianaId;
@@ -115,7 +145,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    // handle ESC event to exit full screen or close the app
+    // handle ESC, f event to exit full screen or close the app
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
@@ -129,6 +159,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             else
             {
                 Close(); 
+            }
+        }
+        if (e.Key == Key.F)
+        {
+            if (WindowState == WindowState.FullScreen)
+            {
+                WindowState = WindowState.Normal;
+                Cursor = Cursor.Default;
+            }
+            else
+            {
+                WindowState = WindowState.FullScreen;
+                Cursor = new Cursor(StandardCursorType.None); 
             }
         }
     }

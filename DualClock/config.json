@@ -1,0 +1,9 @@
+{
+  "TimeZone1_WinId": "Pacific Standard Time",
+  "TimeZone1_IanaId": "America/Los_Angeles",
+  "TimeZone1_Label": "旧金山",
+
+  "TimeZone2_WinId": "China Standard Time",
+  "TimeZone2_IanaId": "Asia/Shanghai",
+  "TimeZone2_Label": "北京"
+}

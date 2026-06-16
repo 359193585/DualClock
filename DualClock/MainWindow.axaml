@@ -7,8 +7,17 @@
         WindowState="FullScreen"
         Background="Black">
     
-    <Grid RowDefinitions="3*, 1.2*, 3*, 1.2*, 1.5*, 50" Margin="30">
-        
+    <Window.ContextMenu>
+            <ContextMenu Opened="OnContextMenuOpened">
+                <MenuItem Header="修改时区配置..." Click="OpenSettings"/>
+                <Separator/>
+                <MenuItem Header="退出程序" Click="MenuClose"/>
+            </ContextMenu>
+    </Window.ContextMenu>
+
+    <Grid RowDefinitions="3*, 1.2*, 3*, 1.2*, 1.5*, 50" Margin="30" Background="Black">
+       
+
         <Viewbox Grid.Row="0" Stretch="Fill" Margin="20,5">
             <TextBlock Text="{Binding SfTimeDisplay}" Foreground="SkyBlue" FontFamily="Courier New, Arial, Microsoft YaHei, DejaVu Sans" FontWeight="Bold"/>
         </Viewbox>
@@ -43,7 +52,7 @@
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
 
-        <TextBlock Grid.Row="5" Text="[按 ESC 退出 ]" 
+        <TextBlock Grid.Row="5" Text="[按 F 全屏，ESC 退出  ]" 
                    Foreground="DimGray" 
                    FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
                    FontSize="22" 
