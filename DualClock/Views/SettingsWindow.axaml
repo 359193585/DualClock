@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:DualClock"
-        xmlns:modules="using:DualClock.Moduls"
+        xmlns:modules="using:DualClock.Modules"
         x:Class="DualClock.SettingsWindow"
         x:DataType="local:SettingsWindow"
         Title="时区设置" 
@@ -22,7 +22,7 @@
                   ItemsSource="{x:Static modules:ClockConfig.AllZones}" 
                   HorizontalAlignment="Stretch" Foreground="White">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:Moduls.TimeZoneItem">
+                <DataTemplate x:DataType="modules:TimeZoneItem">
                     <TextBlock Text="{Binding DisplayName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -34,7 +34,7 @@
                   ItemsSource="{x:Static modules:ClockConfig.AllZones}" 
                   HorizontalAlignment="Stretch" Foreground="White">
             <ComboBox.ItemTemplate>
-                <DataTemplate x:DataType="local:Moduls.TimeZoneItem">
+                <DataTemplate x:DataType="modules:TimeZoneItem">
                     <TextBlock Text="{Binding DisplayName}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using DualClock.Moduls;
+using DualClock.Modules;
 using System;
 
 namespace DualClock;
@@ -17,7 +17,7 @@ public partial class SettingsWindow : Window
 
     private void LoadCurrentSelection()
     {
-        var config = ClockConfig.Load(); // 统一呼叫独立文件里的方法
+        var config = ClockConfig.Load(); 
 
         SetComboValue(ComboZone1, config.TimeZone1_IanaId);
         SetComboValue(ComboZone2, config.TimeZone2_IanaId);

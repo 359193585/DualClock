@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
 
-namespace DualClock.Moduls
+namespace DualClock.Modules
 {
     public class TimeZoneItem
     {
