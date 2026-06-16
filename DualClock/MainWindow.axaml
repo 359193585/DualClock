@@ -42,11 +42,11 @@
                    FontSize="65" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
-        
-        <TextBlock Grid.Row="5" Text="[ Press ESC exit ]" 
+
+        <TextBlock Grid.Row="5" Text="[°´ ESC ÍË³ö ]" 
                    Foreground="DimGray" 
                    FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
-                   FontSize="20" 
+                   FontSize="22" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Bottom"/>
         

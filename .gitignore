@@ -9,6 +9,9 @@
 ## Build outputs
 bin/
 obj/
+scripts/
+publish/
+release/
 *.exe
 *.dll
 *.pdb
@@ -24,4 +27,10 @@ obj/
 *.log
 *.tmp
 Thumbs.db
+*.md
+*.ps1
+*.bak
+*.swp
+
+
 
