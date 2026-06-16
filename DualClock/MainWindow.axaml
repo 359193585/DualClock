@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:DualClock"
+        x:Class="DualClock.MainWindow"
+        x:DataType="local:MainWindow"
+        Title="Dual Clock"
+        WindowState="FullScreen"
+        Background="Black">
+    
+    <Grid RowDefinitions="3*, 1.2*, 3*, 1.2*, 1.5*, 50" Margin="30">
+        
+        <Viewbox Grid.Row="0" Stretch="Fill" Margin="20,5">
+            <TextBlock Text="{Binding SfTimeDisplay}" Foreground="SkyBlue" FontFamily="Courier New, Arial, Microsoft YaHei, DejaVu Sans" FontWeight="Bold"/>
+        </Viewbox>
+        
+        <TextBlock Grid.Row="1" Text="{Binding SfDateDisplay}" 
+                   Foreground="LightCyan" 
+                   FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
+                   FontSize="50" 
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+
+
+        <Viewbox Grid.Row="2" Stretch="Fill" Margin="20,5">
+            <TextBlock Text="{Binding BjTimeDisplay}" Foreground="LightGreen" FontFamily="Courier New, Arial, Microsoft YaHei, DejaVu Sans" FontWeight="Bold"/>
+        </Viewbox>
+        
+        <TextBlock Grid.Row="3" Text="{Binding BjDateDisplay}" 
+                   Foreground="LightYellow" 
+                   FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
+                   FontSize="50" 
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+
+
+        <TextBlock Grid.Row="4" Text="{Binding LocalTimeDisplay}" 
+                   Foreground="Red" 
+                   FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
+                   FontWeight="Bold"
+                   FontSize="65" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"/>
+        
+        <TextBlock Grid.Row="5" Text="[ Press ESC exit ]" 
+                   Foreground="DimGray" 
+                   FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
+                   FontSize="20" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Bottom"/>
+        
+    </Grid>
+</Window>

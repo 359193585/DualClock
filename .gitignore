@@ -1,0 +1,27 @@
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+*.cache
+*.cachefile
+
+## Build outputs
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+
+## Others
+*.log
+*.tmp
+Thumbs.db
+
