@@ -43,7 +43,7 @@
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
 
-        <TextBlock Grid.Row="5" Text="[°´ ESC ÍË³ö ]" 
+        <TextBlock Grid.Row="5" Text="[æŒ‰ ESC é€€å‡º ]" 
                    Foreground="DimGray" 
                    FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
                    FontSize="22" 
