@@ -33,6 +33,7 @@ Thumbs.db
 *.swp
 publish.md
 make_release*.ps1
+version_patch.txt
 
 
 
