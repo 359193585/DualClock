@@ -31,6 +31,8 @@ Thumbs.db
 *.ps1
 *.bak
 *.swp
+publish.md
+make_release*.ps1
 
 
 
