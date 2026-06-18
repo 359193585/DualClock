@@ -28,11 +28,11 @@ release/
 *.tmp
 Thumbs.db
 *.md
-*.ps1
+
 *.bak
 *.swp
 publish.md
-make_release.ps1
+make_release_1.ps1
 
 
 
