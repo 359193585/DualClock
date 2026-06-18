@@ -32,7 +32,9 @@ Thumbs.db
 *.bak
 *.swp
 publish.md
-make_release.ps13
+make_release.ps1
+
+
 
 
 
