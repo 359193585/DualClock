@@ -1,0 +1,67 @@
+﻿// BaseWindow.axaml.cs
+using Avalonia.Controls;
+using Avalonia.Input;
+using System;
+
+namespace DualClock
+{
+    public class BaseWindow : Window
+    {
+        public BaseWindow()
+        {
+            var globalMenu = new ContextMenu();
+            globalMenu.Cursor = new Cursor(StandardCursorType.Arrow);
+
+            var itemSettings = new MenuItem
+            {
+                Header = "修改时区配置..."
+            };
+            itemSettings.Cursor = new Cursor(StandardCursorType.Arrow);
+            itemSettings.Click += OnGlobalSettingsClicked;
+
+            var separator = new Separator();
+
+            var itemExit = new MenuItem
+            {
+                Header = "退出程序"
+            };
+            itemExit.Cursor = new Cursor(StandardCursorType.Arrow);
+            itemExit.Click += OnGlobalExitClicked;
+
+            globalMenu.Items.Add(itemSettings);
+            globalMenu.Items.Add(separator);
+            globalMenu.Items.Add(itemExit);
+
+            this.ContextMenu = globalMenu;
+        }
+
+        private void OnGlobalSettingsClicked(object? sender, EventArgs e)
+        {
+            Cursor = Cursor.Default;
+            var settingsWin = new SettingsWindow();
+            settingsWin.ConfigUpdated += () =>
+            {
+                OnConfigUpdated();
+            };
+
+            settingsWin.ShowDialog(this);
+
+            settingsWin.Closed += (s, ev) =>
+            {
+                // 全屏光标恢复（基类通用）
+                if (WindowState == WindowState.FullScreen)
+                    Cursor = new Cursor(StandardCursorType.None);
+            };
+
+        }
+
+        private void OnGlobalExitClicked(object? sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+        protected virtual void OnConfigUpdated()
+        {
+        }
+        
+    }
+}

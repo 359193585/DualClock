@@ -13,7 +13,7 @@ using System.Text.Json;
 
 namespace DualClock;
 
-public partial class MainWindow : Window, INotifyPropertyChanged
+public partial class MainWindow : BaseWindow, INotifyPropertyChanged
 {
     private string _sfTimeDisplay = "Loading...";
     private string _sfDateDisplay = "Loading...";
@@ -26,7 +26,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private string _label1 = "Zone 1";
     private string _label2 = "Zone 2";
 
-
+    private TinyWindow? _tinyWindow;
+    private bool _isMainWindowClosed = false; // 标记主窗口是否已关闭
     public new event PropertyChangedEventHandler? PropertyChanged;
 
     #region 属性公开给 XAML 绑定
@@ -88,10 +89,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             LocalTimeDisplay = "本地时间: 2026-06-15 15:00:00";
         }
     }
-    private void OnContextMenuOpened(object? sender, RoutedEventArgs e)
+    protected override void OnConfigUpdated()
     {
-        // 菜单弹出时，立刻恢复默认鼠标指针，让用户在全屏下也能看清并操作菜单
-        Cursor = Cursor.Default;
+        LoadConfig();
+        RefreshClocks();
     }
     private void LoadConfig()
     {
@@ -119,20 +120,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         LocalTimeDisplay = $"本地时间: {localNow:yyyy-MM-dd HH:mm:ss}";
     }
-    private void OpenSettings(object sender, RoutedEventArgs e)
-    {
-        Cursor = Cursor.Default;
-
-        var settingsWin = new SettingsWindow();
-        settingsWin.ConfigUpdated += () => {
-            LoadConfig();      
-            RefreshClocks();   
-        };
-        settingsWin.ShowDialog(this);
-        settingsWin.Closed += (s, ev) => {
-            if (WindowState == WindowState.FullScreen) Cursor = new Cursor(StandardCursorType.None);
-        };
-    }
+    
     private void MenuClose(object sender, RoutedEventArgs e) => Close();
     private static TimeZoneInfo GetTimeZoneById(string windowsId, string ianaId)
     {
@@ -145,24 +133,41 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+    public void ShowAndFullScreen()
+    {
+        if (!this.IsVisible)
+            this.Show();
 
-    // handle ESC, f event to exit full screen or close the app
+        if (WindowState != WindowState.FullScreen)
+        {
+            WindowState = WindowState.FullScreen;
+            Cursor = new Cursor(StandardCursorType.None);
+        }
+
+        this.Focus();
+    }
+   
+
+    //  ESC, f event to exit full screen or close the app ,this handleed in basewindow
+    // now hadle T to show tinywindow
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
+        if (e.Handled) return;
         if (e.Key == Key.Escape)
         {
             if (WindowState == WindowState.FullScreen)
             {
-                WindowState = WindowState.Normal; 
-                Cursor = Cursor.Default;            
+                WindowState = WindowState.Normal;
+                Cursor = Cursor.Default;
             }
             else
             {
-                Close(); 
+                Close(); // 退出程序
             }
+            e.Handled = true;
         }
-        if (e.Key == Key.F)
+        else if (e.Key == Key.F)
         {
             if (WindowState == WindowState.FullScreen)
             {
@@ -172,8 +177,65 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             else
             {
                 WindowState = WindowState.FullScreen;
-                Cursor = new Cursor(StandardCursorType.None); 
+                Cursor = new Cursor(StandardCursorType.None);
             }
+            e.Handled = true;
+        }
+        else if (e.Key == Key.T)
+        {
+            if (_tinyWindow == null)
+            {
+                _tinyWindow = new TinyWindow();
+                _tinyWindow.SetMainWindowCallbacks(showMainFullScreen: ShowAndFullScreen);
+                _tinyWindow.Closed += (s, args) =>
+                {
+                    _tinyWindow = null;      // 清空引用，允许下次按 T 重建
+
+                    if (!_isMainWindowClosed && !this.IsVisible)
+                    {
+                        this.Show();
+                        this.Focus();
+                    }
+                };
+            }
+            if (_tinyWindow.IsVisible)
+            {
+                _tinyWindow.Hide();
+                if (!this.IsVisible)
+                    this.Show();
+            }
+            else
+            {
+                _tinyWindow.Show();
+                this.Hide();
+            }
+
+            e.Handled = true;
+        }
+       
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        _isMainWindowClosed = true;
+        if (_tinyWindow != null)
+        {
+            _tinyWindow.Closed -= TinyWindow_Closed;
+            _tinyWindow.Close();
+            _tinyWindow = null;
+        }
+        base.OnClosed(e);
+
+    }
+    private void TinyWindow_Closed(object? sender, EventArgs e)
+    {
+        _tinyWindow = null; // 清理引用
+
+        // 如果主窗口没有被关闭且当前不可见，则显示它
+        if (!_isMainWindowClosed && !this.IsVisible)
+        {
+            this.Show();
+            this.Focus();
         }
     }
 }

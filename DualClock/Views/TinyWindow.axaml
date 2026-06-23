@@ -1,0 +1,48 @@
+<local:BaseWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:DualClock"
+        xmlns:controls="using:DualClock.Controls"
+        x:Class="DualClock.TinyWindow"
+        Title="TinyWindow"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        CanResize="False"   
+        Width="354" 
+        Height="65"
+         WindowDecorations="BorderOnly"
+         Background="Transparent"
+         >
+        
+
+     <Window.Resources>
+        <LinearGradientBrush x:Key="Grad1" EndPoint="1,0">
+            <GradientStop Color="#FF416C" Offset="0"/>
+            <GradientStop Color="#FF4B2B" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="Grad2" EndPoint="1,0">
+            <GradientStop Color="#00B4DB" Offset="0"/>
+            <GradientStop Color="#0083B0" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="Grad3" EndPoint="1,0">
+            <GradientStop Color="#11998E" Offset="0"/>
+            <GradientStop Color="#38EF7D" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Resources>
+
+
+ <WrapPanel x:Name="TinyWrapPanel"
+               Orientation="Horizontal"
+               Margin="2"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center">
+        
+        <controls:ClockItem x:Name="Clock1" TimeBackground="{StaticResource Grad1}" />
+        
+        <controls:ClockItem x:Name="Clock2" TimeBackground="{StaticResource Grad2}" />
+        
+        <controls:ClockItem x:Name="Clock3" TimeBackground="{StaticResource Grad3}" />
+
+    </WrapPanel>
+</local:BaseWindow>
