@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Threading;
 using DualClock.Modules;
 using System;
@@ -22,7 +23,7 @@ public partial class TinyWindow : BaseWindow
     public TinyWindow()
     {
         InitializeComponent();
-
+        this.Background = Brushes.Transparent;
         this.PointerPressed += OnPointerPressed;
 
         LoadConfigAndRefresh();

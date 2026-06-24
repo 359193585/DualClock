@@ -9,9 +9,9 @@
         WindowStartupLocation="CenterScreen"
         Topmost="True"
         CanResize="False"   
-        Width="354" 
-        Height="65"
-         WindowDecorations="BorderOnly"
+        Width="304" 
+        Height="60"
+         WindowDecorations="None"
          Background="Transparent"
          >
         
