@@ -19,8 +19,11 @@ public partial class SettingsWindow : Window
     {
         var config = ClockConfig.Load(); 
 
-        SetComboValue(ComboZone1, config.TimeZone1_IanaId);
-        SetComboValue(ComboZone2, config.TimeZone2_IanaId);
+        SetComboValue(ComboZone1, config.TimeZoneSet.TimeZone1_IanaId);
+        SetComboValue(ComboZone2, config.TimeZoneSet.TimeZone2_IanaId);
+
+        ComboStartWindow.SelectedIndex = config.PrgSet.StartWindow; // 0或1
+        CheckAutoStart.IsChecked = config.PrgSet.AutoStart;
     }
 
     private void SetComboValue(ComboBox comboBox, string ianaId)
@@ -42,16 +45,20 @@ public partial class SettingsWindow : Window
             var parts1 = item1.TagValue.Split('|');
             var parts2 = item2.TagValue.Split('|');
 
-            // 组装新配置并利用独立类的 Save 存储
-            var config = new ClockConfig
-            {
-                TimeZone1_WinId = parts1[0],
-                TimeZone1_IanaId = parts1[1],
-                TimeZone1_Label = parts1[2],
-                TimeZone2_WinId = parts2[0],
-                TimeZone2_IanaId = parts2[1],
-                TimeZone2_Label = parts2[2]
-            };
+            var config = ClockConfig.Load();
+
+            // 更新时区设置（TimeZoneSet）
+            config.TimeZoneSet.TimeZone1_WinId = parts1[0];
+            config.TimeZoneSet.TimeZone1_IanaId = parts1[1];
+            config.TimeZoneSet.TimeZone1_Label = parts1[2];
+
+            config.TimeZoneSet.TimeZone2_WinId = parts2[0];
+            config.TimeZoneSet.TimeZone2_IanaId = parts2[1];
+            config.TimeZoneSet.TimeZone2_Label = parts2[2];
+
+            config.PrgSet.StartWindow = ComboStartWindow.SelectedIndex; // 0 或 1
+            config.PrgSet.AutoStart = CheckAutoStart.IsChecked == true;
+
             config.Save();
 
             ConfigUpdated?.Invoke();

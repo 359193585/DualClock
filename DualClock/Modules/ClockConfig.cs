@@ -8,17 +8,29 @@ namespace DualClock.Modules
         public string TagValue { get; set; } = string.Empty;   // "WinId|IanaId|中文名"
         public string DisplayName { get; set; } = string.Empty; // "北京 (中国)"
     }
-    public class ClockConfig
+    public class PrgConfig
     {
-        private const string ConfigPath = "config.json";
+        public int StartWindow { get; set; } = 0;          // 启动时显示的窗口 (0=主窗口, 1=小窗)
+        public bool AutoStart { get; set; } = true;        // 是否开机自启动
+    }
+    public class TimeZoneConfig
+    {
         public string TimeZone1_WinId { get; set; } = "Pacific Standard Time";
         public string TimeZone1_IanaId { get; set; } = "America/Los_Angeles";
-        public string TimeZone1_Label { get; set; } = "SF";
+        public string TimeZone1_Label { get; set; } = "旧金山";
 
         public string TimeZone2_WinId { get; set; } = "China Standard Time";
         public string TimeZone2_IanaId { get; set; } = "Asia/Shanghai";
-        public string TimeZone2_Label { get; set; } = "BJ";
-
+        public string TimeZone2_Label { get; set; } = "北京";
+    }
+    /// <summary>
+    /// 根配置类，映射 config.json 
+    /// </summary>
+    public class ClockConfig
+    {
+        private const string ConfigPath = "config.json";
+        public PrgConfig PrgSet { get; set; } = new PrgConfig();
+        public TimeZoneConfig TimeZoneSet { get; set; } = new TimeZoneConfig();
 
         public static TimeZoneItem[] AllZones { get; } = new[]
             {

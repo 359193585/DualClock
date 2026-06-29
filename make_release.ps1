@@ -1,3 +1,10 @@
+#
+#   请在 PowerShell 7 中运行此脚本
+#   如没有 PowerShell 7，请先安装 PowerShell 7
+#   或者修改脚本，使得它符合你当前的 PowerShell 版本
+#
+
+
 # 1. 读取和写入 Patch 号 (防止 PS7 文件锁)
 $patchFile = Resolve-Path "version_patch.txt" -ErrorAction SilentlyContinue
 $patch = 0

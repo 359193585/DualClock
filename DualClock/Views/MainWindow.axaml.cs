@@ -26,8 +26,6 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
     private string _label1 = "Zone 1";
     private string _label2 = "Zone 2";
 
-    private TinyWindow? _tinyWindow;
-    private bool _isMainWindowClosed = false; // 标记主窗口是否已关闭
     public new event PropertyChangedEventHandler? PropertyChanged;
 
     #region 属性公开给 XAML 绑定
@@ -98,10 +96,10 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
     {
         var config = ClockConfig.Load();
 
-        _timeZone1 = GetTimeZoneById(config.TimeZone1_WinId, config.TimeZone1_IanaId);
-        _timeZone2 = GetTimeZoneById(config.TimeZone2_WinId, config.TimeZone2_IanaId);
-        _label1 = config.TimeZone1_Label;
-        _label2 = config.TimeZone2_Label;
+        _timeZone1 = GetTimeZoneById(config.TimeZoneSet.TimeZone1_WinId, config.TimeZoneSet.TimeZone1_IanaId);
+        _timeZone2 = GetTimeZoneById(config.TimeZoneSet.TimeZone2_WinId, config.TimeZoneSet.TimeZone2_IanaId);
+        _label1 = config.TimeZoneSet.TimeZone1_Label;
+        _label2 = config.TimeZoneSet.TimeZone2_Label;
     }
     private void RefreshClocks()
     {
@@ -183,59 +181,10 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         }
         else if (e.Key == Key.T)
         {
-            if (_tinyWindow == null)
-            {
-                _tinyWindow = new TinyWindow();
-                _tinyWindow.SetMainWindowCallbacks(showMainFullScreen: ShowAndFullScreen);
-                _tinyWindow.Closed += (s, args) =>
-                {
-                    _tinyWindow = null;      // 清空引用，允许下次按 T 重建
-
-                    if (!_isMainWindowClosed && !this.IsVisible)
-                    {
-                        this.Show();
-                        this.Focus();
-                    }
-                };
-            }
-            if (_tinyWindow.IsVisible)
-            {
-                _tinyWindow.Hide();
-                if (!this.IsVisible)
-                    this.Show();
-            }
-            else
-            {
-                _tinyWindow.Show();
-                this.Hide();
-            }
-
+            WindowManager.ToggleTinyWindow(this);
             e.Handled = true;
         }
        
     }
 
-    protected override void OnClosed(EventArgs e)
-    {
-        _isMainWindowClosed = true;
-        if (_tinyWindow != null)
-        {
-            _tinyWindow.Closed -= TinyWindow_Closed;
-            _tinyWindow.Close();
-            _tinyWindow = null;
-        }
-        base.OnClosed(e);
-
-    }
-    private void TinyWindow_Closed(object? sender, EventArgs e)
-    {
-        _tinyWindow = null; // 清理引用
-
-        // 如果主窗口没有被关闭且当前不可见，则显示它
-        if (!_isMainWindowClosed && !this.IsVisible)
-        {
-            this.Show();
-            this.Focus();
-        }
-    }
 }

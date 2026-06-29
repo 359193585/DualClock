@@ -28,6 +28,7 @@ public partial class TinyWindow : BaseWindow
 
         LoadConfigAndRefresh();
 
+        this.Closed += (s, e) => WindowManager.OnTinyWindowClosed();
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
@@ -52,10 +53,10 @@ public partial class TinyWindow : BaseWindow
     {
         var config = ClockConfig.Load();
 
-        _timeZone1 = GetTimeZoneById(config.TimeZone1_WinId, config.TimeZone1_IanaId);
-        _timeZone2 = GetTimeZoneById(config.TimeZone2_WinId, config.TimeZone2_IanaId);
-        _label1 = config.TimeZone1_Label;
-        _label2 = config.TimeZone2_Label;
+        _timeZone1 = GetTimeZoneById(config.TimeZoneSet.TimeZone1_WinId, config.TimeZoneSet.TimeZone1_IanaId);
+        _timeZone2 = GetTimeZoneById(config.TimeZoneSet.TimeZone2_WinId, config.TimeZoneSet.TimeZone2_IanaId);
+        _label1 = config.TimeZoneSet.TimeZone1_Label;
+        _label2 = config.TimeZoneSet.TimeZone2_Label;
 
         RefreshClocks();
     }
@@ -118,11 +119,8 @@ public partial class TinyWindow : BaseWindow
     {
         if (e.Key == Key.F)
         {
-            this.Hide();  // 隐藏自身
-
-            // 调用回调，让 MainWindow 显示并全屏
-            _showMainFullScreen?.Invoke();
-
+            this.Hide();
+            WindowManager.ShowMainWindowFullScreen();
             e.Handled = true;
         }
     }

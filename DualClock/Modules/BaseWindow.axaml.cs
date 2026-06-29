@@ -14,7 +14,7 @@ namespace DualClock
 
             var itemSettings = new MenuItem
             {
-                Header = "修改时区配置..."
+                Header = "程序设置..."
             };
             itemSettings.Cursor = new Cursor(StandardCursorType.Arrow);
             itemSettings.Click += OnGlobalSettingsClicked;
