@@ -14,9 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "publish", "publish", "{7AD8E877-C29A-47D9-B054-4B85582D9374}"
 	ProjectSection(SolutionItems) = preProject
-		publish.md = publish.md
+		make.md = make.md
 		make_release.ps1 = make_release.ps1
-		make_release_1.ps1 = make_release_1.ps1
 		version_patch.txt = version_patch.txt
 	EndProjectSection
 EndProject
