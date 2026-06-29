@@ -12,6 +12,10 @@ namespace DualClock.Modules
     {
         public int StartWindow { get; set; } = 0;          // 启动时显示的窗口 (0=主窗口, 1=小窗)
         public bool AutoStart { get; set; } = true;        // 是否开机自启动
+        
+        // 小窗最后位置（屏幕坐标），null 表示未设置（首次居中）
+        public int? TinyWindowPosX { get; set; }
+        public int? TinyWindowPosY { get; set; }
     }
     public class TimeZoneConfig
     {

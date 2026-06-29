@@ -28,12 +28,14 @@ public partial class SettingsWindow : Window
 
     private void SetComboValue(ComboBox comboBox, string ianaId)
     {
-        foreach (TimeZoneItem item in comboBox.Items)
+        var items = comboBox.Items;
+        if (items == null) return;
+        foreach (object obj in items)  
         {
-            if (item.TagValue.Contains(ianaId))
+            if (obj is TimeZoneItem item && item.TagValue != null && item.TagValue.Contains(ianaId))
             {
                 comboBox.SelectedItem = item;
-                break;
+                return;
             }
         }
     }
@@ -63,6 +65,11 @@ public partial class SettingsWindow : Window
 
             ConfigUpdated?.Invoke();
             Close();
+
+            if (config.PrgSet.AutoStart)
+                AutoStartManager.Enable("DualClock");
+            else
+                AutoStartManager.Disable("DualClock");
         }
     }
 }

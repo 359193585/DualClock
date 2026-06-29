@@ -20,6 +20,8 @@ public partial class TinyWindow : BaseWindow
     private DispatcherTimer _timer;
 
     private Action? _showMainFullScreen; // 回调：显示主窗并全屏
+    private PixelPoint _lastSavedPosition; // 记录上次保存的位置，避免重复写入
+
     public TinyWindow()
     {
         InitializeComponent();
@@ -28,7 +30,21 @@ public partial class TinyWindow : BaseWindow
 
         LoadConfigAndRefresh();
 
+        // 加载保存的位置
+        var config = ClockConfig.Load();
+        if (config.PrgSet.TinyWindowPosX.HasValue && config.PrgSet.TinyWindowPosY.HasValue)
+        {
+            Position = new PixelPoint(config.PrgSet.TinyWindowPosX.Value, config.PrgSet.TinyWindowPosY.Value);
+            _lastSavedPosition = Position; // 初始化
+            WindowStartupLocation = WindowStartupLocation.Manual;
+        }
+
+        // 监听位置变化，自动保存
+        this.LayoutUpdated += OnLayoutUpdated;
+        this.Closed += (s, e) => this.LayoutUpdated -= OnLayoutUpdated;
+
         this.Closed += (s, e) => WindowManager.OnTinyWindowClosed();
+
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
@@ -36,6 +52,18 @@ public partial class TinyWindow : BaseWindow
         _timer.Tick += (s, e) => RefreshClocks();
         _timer.Start();
 
+    }
+    private void OnLayoutUpdated(object? sender, EventArgs e)
+    {
+        var currentPos = Position;
+        if (currentPos != _lastSavedPosition)
+        {
+            _lastSavedPosition = currentPos;
+            var config = ClockConfig.Load();
+            config.PrgSet.TinyWindowPosX = currentPos.X;
+            config.PrgSet.TinyWindowPosY = currentPos.Y;
+            config.Save();
+        }
     }
     public void SetMainWindowCallbacks(Action showMainFullScreen)
     {
