@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -6,19 +7,21 @@ using DualClock.Modules;
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 
 namespace DualClock;
 
 public partial class MainWindow : BaseWindow, INotifyPropertyChanged
 {
+    private string _sfCityDisplay = "SF:";
     private string _sfTimeDisplay = "Loading...";
     private string _sfDateDisplay = "Loading...";
+
+    private string _bjCityDisplay = "BJ:";
     private string _bjTimeDisplay = "Loading...";
     private string _bjDateDisplay = "Loading...";
+
     private string _localTimeDisplay = "Local: 00:00:00";
 
     private TimeZoneInfo _timeZone1 = TimeZoneInfo.Utc;
@@ -29,6 +32,11 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
     public new event PropertyChangedEventHandler? PropertyChanged;
 
     #region 属性公开给 XAML 绑定
+    public string SfCityDisplay
+    {
+        get => _sfCityDisplay;
+        set { if (_sfCityDisplay != value) { _sfCityDisplay = value; OnPropertyChanged(); } }
+    }
     public string SfTimeDisplay
     {
         get => _sfTimeDisplay;
@@ -41,6 +49,11 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         set { if (_sfDateDisplay != value) { _sfDateDisplay = value; OnPropertyChanged(); } }
     }
 
+    public string BjCityDisplay
+    {
+        get => _bjCityDisplay;
+        set { if (_bjCityDisplay != value) { _bjCityDisplay = value; OnPropertyChanged(); } }
+    }
     public string BjTimeDisplay
     {
         get => _bjTimeDisplay;
@@ -80,10 +93,14 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         else
         {
             // 设计器预览
-            SfTimeDisplay = "SF: 08:00:00";
+            SfCityDisplay = "美国西部湾区城市旧金山";
+            SfTimeDisplay = "08:00:00";
             SfDateDisplay = "10月24日 星期五";
-            BjTimeDisplay = "BJ: 23:00:00";
+
+            BjCityDisplay = "北京";
+            BjTimeDisplay = "23:00:00";
             BjDateDisplay = "10月24日 星期五";
+
             LocalTimeDisplay = "本地时间: 2026-06-15 15:00:00";
         }
     }
@@ -109,8 +126,10 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         DateTime t1 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone1);
         DateTime t2 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone2);
 
-        SfTimeDisplay = $"{_label1}: {t1:HH:mm:ss}";
-        BjTimeDisplay = $"{_label2}: {t2:HH:mm:ss}";
+        SfCityDisplay = $"{_label1} ";
+        SfTimeDisplay = $"{t1:HH:mm:ss}";
+        BjCityDisplay = $"{_label2} ";
+        BjTimeDisplay = $"{t2:HH:mm:ss}";
 
         var culture = new CultureInfo("zh-CN");
         SfDateDisplay = t1.ToString("MM月dd日 dddd", culture);
@@ -161,7 +180,10 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
             }
             else
             {
-                Close(); // 退出程序
+                WindowManager.CloseAllWindows();
+                //Close(); // 退出程序
+                Environment.Exit(0);
+
             }
             e.Handled = true;
         }
@@ -184,7 +206,6 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
             WindowManager.ToggleTinyWindow(this);
             e.Handled = true;
         }
-       
     }
 
 }

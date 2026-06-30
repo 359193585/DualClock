@@ -20,6 +20,8 @@ namespace DualClock
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                desktop.ShutdownMode = ShutdownMode.OnLastWindowClose;
+
                 // 加载图标(跨平台)
                 AppIcon = GetPlatformIcon();
 

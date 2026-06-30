@@ -78,5 +78,10 @@ namespace DualClock
                 _mainWindow.Focus();
             }
         }
+        public static void CloseAllWindows()
+        {
+            _tinyWindow?.Close();
+            _mainWindow?.Close();
+        }
     }
 }
