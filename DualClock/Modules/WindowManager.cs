@@ -63,6 +63,8 @@ namespace DualClock
             else
             {
                 // 显示小窗，隐藏主窗口
+                tiny.Topmost = true;
+                tiny.ShowInTaskbar = false;
                 tiny.Show();
                 caller.Hide();
             }
@@ -83,5 +85,6 @@ namespace DualClock
             _tinyWindow?.Close();
             _mainWindow?.Close();
         }
+
     }
 }

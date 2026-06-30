@@ -5,5 +5,11 @@
 
     <Application.Styles>
         <FluentTheme />
+
+        <Style Selector=":is(WindowBase)">
+        <Setter Property="Topmost" Value="True" />
+
+    </Style>
+
     </Application.Styles>
 </Application>

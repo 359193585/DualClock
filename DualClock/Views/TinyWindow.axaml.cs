@@ -25,7 +25,9 @@ public partial class TinyWindow : BaseWindow
         InitializeComponent();
         this.Background = Brushes.Transparent;
         this.PointerPressed += OnPointerPressed;
-       
+        this.Topmost = true;
+        this.ShowInTaskbar = false;
+
         // 加载保存的窗体位置
         var config = ClockConfig.Load();
         if (config.PrgSet.TinyWindowPosX.HasValue && config.PrgSet.TinyWindowPosY.HasValue)
@@ -67,6 +69,23 @@ public partial class TinyWindow : BaseWindow
         {
             WindowManager.OnTinyWindowClosed();
             _timer.Stop();
+        };
+        // 订阅 Deactivated 事件  
+        this.Deactivated += (s, e) =>
+        {
+            // 在失去焦点时，强制刷新窗口状态
+            // 注意：此处不能直接 Hide/Show，会引发循环，需要用 Dispatcher 延迟执行
+            // 专门针对“切换到其他窗口后失效”的场景设计，社区验证有效。
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (this.Topmost)
+                {
+                    // 暂时取消置顶再恢复，以触发窗口管理器刷新
+                    this.Topmost = false;
+                    this.Topmost = true;
+                    this.ShowInTaskbar = false;
+                }
+            }, DispatcherPriority.Background);
         };
     }
     private void CheckAndSavePosition()
@@ -156,5 +175,13 @@ public partial class TinyWindow : BaseWindow
             e.Handled = true;
         }
     }
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+        // 确保每次窗口打开时都强制置顶且不在任务栏显示
+        this.Topmost = true;
+        this.ShowInTaskbar = false;
+    }
+  
 
 }
