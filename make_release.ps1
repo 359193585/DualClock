@@ -15,8 +15,8 @@ $patch++
 [System.IO.File]::WriteAllText((New-Item -Path "version_patch.txt" -Force), $patch.ToString())
 
 # 2. 版本号定义
-$major = 1
-$minor = 1
+$major = 2
+$minor = 0
 $version = "$major.$minor.$patch"
 $assemblyVersion = "$major.$minor.$patch.0"
 

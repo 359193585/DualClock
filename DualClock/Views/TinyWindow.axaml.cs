@@ -18,42 +18,58 @@ public partial class TinyWindow : BaseWindow
     private string _label2 = "Zone2";
 
     private DispatcherTimer _timer;
-
-    private Action? _showMainFullScreen; // 回调：显示主窗并全屏
-    private PixelPoint _lastSavedPosition; // 记录上次保存的位置，避免重复写入
+    private PixelPoint _lastSavedPosition;
 
     public TinyWindow()
     {
         InitializeComponent();
         this.Background = Brushes.Transparent;
         this.PointerPressed += OnPointerPressed;
-
-        LoadConfigAndRefresh();
-
-        // 加载保存的位置
+       
+        // 加载保存的窗体位置
         var config = ClockConfig.Load();
         if (config.PrgSet.TinyWindowPosX.HasValue && config.PrgSet.TinyWindowPosY.HasValue)
         {
             Position = new PixelPoint(config.PrgSet.TinyWindowPosX.Value, config.PrgSet.TinyWindowPosY.Value);
-            _lastSavedPosition = Position; // 初始化
-            WindowStartupLocation = WindowStartupLocation.Manual;
         }
+        else
+        {
+            var screen = Screens.Primary;
+            if (screen != null)
+            {
+                var screenBounds = screen.Bounds;
+                var windowWidth = this.Width;
+                var windowHeight = this.Height;
+                // 居中显示
+                var centerX = (screenBounds.Width - windowWidth) / 2;
+                var centerY = (screenBounds.Height - windowHeight) / 2;
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Position = new PixelPoint((int)centerX, (int)centerY);
+            }
+        }
+        _lastSavedPosition = Position;
+        WindowStartupLocation = WindowStartupLocation.Manual;
 
-        // 监听位置变化，自动保存
-        this.LayoutUpdated += OnLayoutUpdated;
-        this.Closed += (s, e) => this.LayoutUpdated -= OnLayoutUpdated;
-
-        this.Closed += (s, e) => WindowManager.OnTinyWindowClosed();
-
+        //加载时区配置并初始化时钟
+        LoadConfigAndRefresh();
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
         };
-        _timer.Tick += (s, e) => RefreshClocks();
+        _timer.Tick += (s, e) =>
+        {
+            RefreshClocks();
+            CheckAndSavePosition();
+        };
         _timer.Start();
 
+        this.Closed += (s, e) =>
+        {
+            WindowManager.OnTinyWindowClosed();
+            _timer.Stop();
+        };
     }
-    private void OnLayoutUpdated(object? sender, EventArgs e)
+    private void CheckAndSavePosition()
     {
         var currentPos = Position;
         if (currentPos != _lastSavedPosition)
@@ -65,11 +81,6 @@ public partial class TinyWindow : BaseWindow
             config.Save();
         }
     }
-    public void SetMainWindowCallbacks(Action showMainFullScreen)
-    {
-        _showMainFullScreen = showMainFullScreen;
-    }
-
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
@@ -115,13 +126,6 @@ public partial class TinyWindow : BaseWindow
     protected override void OnConfigUpdated()
     {
         LoadConfigAndRefresh();
-    }
-
-    protected override void OnClosed(EventArgs e)
-    {
-        _timer?.Stop();
-        _showMainFullScreen = null;
-        base.OnClosed(e);
     }
 
     private TimeZoneInfo GetTimeZoneById(string winId, string ianaId)
