@@ -49,7 +49,9 @@ foreach ($rid in $runtimes) {
             "-p:FileVersion=$assemblyVersion",
             "-p:InformationalVersion=$version"
         )
-
+        # 设置 Windows 应用程序图标（其他平台忽略此参数）
+        $baseArgs += @("-p:ApplicationIcon=Assets/icon.ico")
+        
         # 4.2.1 纯净 Base 版
         $baseLaunchArgs = $baseArgs + @(
             "--self-contained", "false", 

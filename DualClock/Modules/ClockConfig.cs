@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace DualClock.Modules
@@ -81,7 +82,12 @@ namespace DualClock.Modules
         {
             try
             {
-                var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // 保留中文字符
+                };
+                var json = JsonSerializer.Serialize(this, options);
                 File.WriteAllText(ConfigPath, json);
             }
             catch { }

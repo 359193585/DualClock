@@ -7,14 +7,14 @@
         xmlns:controls="using:DualClock.Controls"
         x:Class="DualClock.TinyWindow"
         Title="TinyWindow"
-        Topmost="True"
         CanResize="False"   
-        Width="301" 
+        Width="300" 
         Height="60"
-         WindowDecorations="None"
-         Background="Transparent"
-         >
-        
+        WindowDecorations="None"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        >
 
      <Window.Resources>
         <LinearGradientBrush x:Key="Grad1" EndPoint="1,0">

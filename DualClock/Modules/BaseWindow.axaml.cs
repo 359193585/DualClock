@@ -33,6 +33,7 @@ namespace DualClock
             globalMenu.Items.Add(itemExit);
 
             this.ContextMenu = globalMenu;
+            this.Icon = App.AppIcon;
         }
 
         private void OnGlobalSettingsClicked(object? sender, EventArgs e)

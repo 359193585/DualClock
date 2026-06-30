@@ -5,7 +5,9 @@
         x:DataType="local:MainWindow"
         Title="Dual Clock"
         WindowState="FullScreen"
-        Background="Black">
+        Background="Black"
+        Topmost="True" 
+        >
 
     <Grid RowDefinitions="3*, 1.2*, 3*, 1.2*, 1.5*, 50" Margin="30" Background="Black">
        
@@ -20,7 +22,8 @@
                    FontSize="50" 
                    FontWeight="SemiBold"
                    HorizontalAlignment="Center" 
-                   VerticalAlignment="Center"/>
+                   VerticalAlignment="Center"
+                   />
 
 
         <Viewbox Grid.Row="2" Stretch="Fill" Margin="20,5">
