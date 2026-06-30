@@ -83,10 +83,10 @@ foreach ($rid in $runtimes) {
         Compress-Archive -Path "$bundledOutput\*" -DestinationPath $bundledZip -Force
 
     # 4.5 GitHub Release
-      # Write-Host "发布到 github ..." -ForegroundColor Cyan
-      # $tag = "v$version"
-      # git tag -f -m "Release DualClock $version" $tag
-      # git push origin $tag --force
+       Write-Host "发布到 github ..." -ForegroundColor Cyan
+       $tag = "v$version"
+       git tag -f -m "Release DualClock $version" $tag
+       git push origin $tag --force
       #
       # gh release create $tag `
       #      $baseZip `
