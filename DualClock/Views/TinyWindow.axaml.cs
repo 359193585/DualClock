@@ -52,11 +52,13 @@ public partial class TinyWindow : BaseWindow
         _lastSavedPosition = Position;
         WindowStartupLocation = WindowStartupLocation.Manual;
 
+        
+
         //加载时区配置并初始化时钟
         LoadConfigAndRefresh();
         _timer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromMilliseconds(200)
         };
         _timer.Tick += (s, e) =>
         {
@@ -116,6 +118,9 @@ public partial class TinyWindow : BaseWindow
         _label1 = config.TimeZoneSet.TimeZone1_Label;
         _label2 = config.TimeZoneSet.TimeZone2_Label;
 
+        //根据配置控制秒是否显示
+        Second.IsVisible = config.PrgSet.ShowSeconds;
+
         RefreshClocks();
     }
 
@@ -140,6 +145,8 @@ public partial class TinyWindow : BaseWindow
         // 设置时钟3（本地时间）
         Clock3.SetDate($"本地 {localNow.ToString("MM/dd ddd", culture).Replace("周", "")}");
         Clock3.SetTime(localNow.ToString("HH:mm"));
+
+        Second.SetSecond(localNow.ToString("ss"));
     }
 
     protected override void OnConfigUpdated()

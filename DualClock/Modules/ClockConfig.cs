@@ -17,6 +17,7 @@ namespace DualClock.Modules
         // 小窗最后位置（屏幕坐标），null 表示未设置（首次居中）
         public int? TinyWindowPosX { get; set; }
         public int? TinyWindowPosY { get; set; }
+        public bool ShowSeconds { get; set; } = true; // 默认显示
     }
     public class TimeZoneConfig
     {

@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="30" d:DesignHeight="60"
+             x:Class="DualClock.Controls.SecondItem"
+             x:Name="RootControlSecond"
+             Background="Transparent"
+             Width="30"
+             Height="60">
+
+      <Border Background="#333333"
+            CornerRadius="8"
+            Padding="0">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="2">
+            <!-- Í¼±ê -->
+            <Image Source="avares://DualClock/Assets/icon.png" 
+                   Width="30" Height="30" 
+                   HorizontalAlignment="Center" />
+                <Viewbox  Stretch="Fill" Margin="3,-3,3,20">
+                    <TextBlock x:Name="PART_SecondTextBlock"
+                            Text="53"   
+                            Margin="0,0" 
+                            Padding="0"
+                            FontSize="24"
+                            FontFamily="Consolas"
+                            Foreground="White"
+                            HorizontalAlignment="Center" />
+                </Viewbox>
+          </StackPanel>
+      </Border>
+</UserControl>

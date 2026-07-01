@@ -24,6 +24,8 @@ public partial class SettingsWindow : Window
 
         ComboStartWindow.SelectedIndex = config.PrgSet.StartWindow; // 0»ò1
         CheckAutoStart.IsChecked = config.PrgSet.AutoStart;
+
+        CheckShowSeconds.IsChecked = config.PrgSet.ShowSeconds;
     }
 
     private void SetComboValue(ComboBox comboBox, string ianaId)
@@ -60,6 +62,8 @@ public partial class SettingsWindow : Window
 
             config.PrgSet.StartWindow = ComboStartWindow.SelectedIndex; // 0 »ò 1
             config.PrgSet.AutoStart = CheckAutoStart.IsChecked == true;
+
+            config.PrgSet.ShowSeconds = CheckShowSeconds.IsChecked == true;
 
             config.Save();
 

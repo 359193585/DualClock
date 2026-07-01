@@ -1,7 +1,8 @@
 {
   "PrgSet": {
     "StartWindow": 1,
-    "AutoStart": false
+    "AutoStart": false,
+    "ShowSeconds": true
   },
   "TimeZoneSet": {
     "TimeZone1_WinId": "Pacific Standard Time",
