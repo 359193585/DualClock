@@ -20,31 +20,33 @@
     <Border Background="#333333"
             CornerRadius="8"
             Padding="0">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock x:Name="PART_DateTextBlock"
-                       Text="Beijing 06/22"  
+       <Grid RowDefinitions="25,35" Margin="0,0"  Width="120" ShowGridLines="false">
+          <Viewbox Grid.Row="0"  Stretch="Fill" Margin="14,3">
+              <TextBlock x:Name="PART_DateTextBlock"
+                       Text="Beijing 06/22 三"  
                        FontSize="14"
                        FontWeight="Bold"
                        Foreground="#CCCCCC"
                        HorizontalAlignment="Center"
-                       Margin="0,0,0,0" 
                       />
-
+         </Viewbox>
+         <Viewbox Grid.Row="1"  Stretch="Fill" Margin="4,0">
             <Border x:Name="PART_TimeBorder"
                     CornerRadius="3"
-                    Margin="0,5"
+                    Margin="10,2,16,10"
                     Padding="0"
                     Background="{Binding TimeBackground,   ElementName=RootControl}"
-                     BoxShadow="5 5 10 DarkGray">
+                    BoxShadow="5 5 10 DarkGray">
                 <TextBlock x:Name="PART_TimeTextBlock"
                            Text="23:53"   
-                           Margin="0" Padding="0"
-                           FontSize="20"
+                           Margin="14,0" Padding="0"
+                           FontSize="26"
                            FontWeight="Bold"
                            Foreground="Black"
                            HorizontalAlignment="Center" />
             </Border>
-
-        </StackPanel>
+         </Viewbox>
+ 
+       </Grid>
     </Border>
 </UserControl>

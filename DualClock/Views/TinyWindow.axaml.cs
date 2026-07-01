@@ -130,15 +130,15 @@ public partial class TinyWindow : BaseWindow
         var culture = new CultureInfo("zh-CN");
 
         // 设置时钟1（配置时区1）
-        Clock1.SetDate($"{_label1} {t1.ToString("MM/dd", culture)}");
+        Clock1.SetDate($"{_label1} {t1.ToString("MM/dd ddd", culture).Replace("周", "")}");
         Clock1.SetTime(t1.ToString("HH:mm"));  
 
         // 设置时钟2（配置时区2）
-        Clock2.SetDate($"{_label2} {t2.ToString("MM/dd", culture)}");
+        Clock2.SetDate($"{_label2} {t2.ToString("MM/dd ddd", culture).Replace("周", "")}");
         Clock2.SetTime(t2.ToString("HH:mm"));
 
         // 设置时钟3（本地时间）
-        Clock3.SetDate($"本地 {localNow.ToString("MM/dd", culture)}");
+        Clock3.SetDate($"本地 {localNow.ToString("MM/dd ddd", culture).Replace("周", "")}");
         Clock3.SetTime(localNow.ToString("HH:mm"));
     }
 
