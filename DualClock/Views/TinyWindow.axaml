@@ -37,14 +37,6 @@
                Margin="0"
                HorizontalAlignment="Center"
                VerticalAlignment="Center">
-        
-        <controls:ClockItem x:Name="Clock1" TimeBackground="{StaticResource Grad1}" />
-        
-        <controls:ClockItem x:Name="Clock2" TimeBackground="{StaticResource Grad2}" />
-        
-        <controls:ClockItem x:Name="Clock3" TimeBackground="{StaticResource Grad3}" />
-
-        <controls:SecondItem x:Name="Second" />
 
     </StackPanel>
 </local:BaseWindow>

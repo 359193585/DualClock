@@ -5,12 +5,24 @@
     "ShowSeconds": true
   },
   "TimeZoneSet": {
-    "TimeZone1_WinId": "Pacific Standard Time",
-    "TimeZone1_IanaId": "America/Los_Angeles",
-    "TimeZone1_Label": "旧金山",
+    "Zones": [
+      {
+        "WinId": "Pacific Standard Time",
+        "IanaId": "America/Los_Angeles",
+        "Label": "旧金山"
+      },
 
-    "TimeZone2_WinId": "China Standard Time",
-    "TimeZone2_IanaId": "Asia/Shanghai",
-    "TimeZone2_Label": "北京"
+      {
+        "WinId": "Eastern Standard Time",
+        "IanaId": "America/New_York",
+        "Label": "匹兹堡"
+      },
+      {
+        "WinId": "China Standard Time",
+        "IanaId": "Asia/Shanghai",
+        "Label": "北京"
+      }
+    ]
+
   }
 }

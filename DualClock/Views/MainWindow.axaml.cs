@@ -112,11 +112,23 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
     private void LoadConfig()
     {
         var config = ClockConfig.Load();
-
-        _timeZone1 = GetTimeZoneById(config.TimeZoneSet.TimeZone1_WinId, config.TimeZoneSet.TimeZone1_IanaId);
-        _timeZone2 = GetTimeZoneById(config.TimeZoneSet.TimeZone2_WinId, config.TimeZoneSet.TimeZone2_IanaId);
-        _label1 = config.TimeZoneSet.TimeZone1_Label;
-        _label2 = config.TimeZoneSet.TimeZone2_Label;
+        var zones = config.TimeZoneSet.Zones;
+        var zone1 = zones.Count > 0 ? zones[0] : new TimeZoneItemConfig
+        {
+            WinId = "Pacific Standard Time",
+            IanaId = "America/Los_Angeles",
+            Label = "旧金山"
+        };
+        var zone2 = zones.Count > 1 ? zones[1] : new TimeZoneItemConfig
+        {
+            WinId = "China Standard Time",
+            IanaId = "Asia/Shanghai",
+            Label = "北京"
+        };
+        _timeZone1 = GetTimeZoneById(zone1.WinId, zone1.IanaId);
+        _timeZone2 = GetTimeZoneById(zone2.WinId, zone2.IanaId);
+        _label1 = zone1.Label;
+        _label2 = zone2.Label;
     }
     private void RefreshClocks()
     {

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -21,13 +22,14 @@ namespace DualClock.Modules
     }
     public class TimeZoneConfig
     {
-        public string TimeZone1_WinId { get; set; } = "Pacific Standard Time";
-        public string TimeZone1_IanaId { get; set; } = "America/Los_Angeles";
-        public string TimeZone1_Label { get; set; } = "旧金山";
+        public List<TimeZoneItemConfig> Zones { get; set; } = new List<TimeZoneItemConfig>();
+    }
 
-        public string TimeZone2_WinId { get; set; } = "China Standard Time";
-        public string TimeZone2_IanaId { get; set; } = "Asia/Shanghai";
-        public string TimeZone2_Label { get; set; } = "北京";
+    public class TimeZoneItemConfig
+    {
+        public string WinId { get; set; } = "Pacific Standard Time";
+        public string IanaId { get; set; } = "America/Los_Angeles";
+        public string Label { get; set; } = "旧金山";
     }
     /// <summary>
     /// 根配置类，映射 config.json 

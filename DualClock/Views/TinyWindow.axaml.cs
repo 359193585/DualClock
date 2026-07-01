@@ -1,61 +1,41 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
+using DualClock.Controls;
 using DualClock.Modules;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 
 namespace DualClock;
 
 public partial class TinyWindow : BaseWindow
 {
-    private TimeZoneInfo _timeZone1 = TimeZoneInfo.Utc;
-    private TimeZoneInfo _timeZone2 = TimeZoneInfo.Utc;
-    private string _label1 = "Zone1";
-    private string _label2 = "Zone2";
-
     private DispatcherTimer _timer;
     private PixelPoint _lastSavedPosition;
+
+    private List<ClockItem> _clockItems = new List<ClockItem>();
+    private List<(TimeZoneInfo TimeZone, string Label)> _zones = new List<(TimeZoneInfo, string)>();
+    private ClockItem _localClock = null!;
+    private SecondItem _secondItem = null!;
 
     public TinyWindow()
     {
         InitializeComponent();
-        this.Background = Brushes.Transparent;
-        this.PointerPressed += OnPointerPressed;
-        this.Topmost = true;
-        this.ShowInTaskbar = false;
 
-        // 加载保存的窗体位置
-        var config = ClockConfig.Load();
-        if (config.PrgSet.TinyWindowPosX.HasValue && config.PrgSet.TinyWindowPosY.HasValue)
-        {
-            Position = new PixelPoint(config.PrgSet.TinyWindowPosX.Value, config.PrgSet.TinyWindowPosY.Value);
-        }
-        else
-        {
-            var screen = Screens.Primary;
-            if (screen != null)
-            {
-                var screenBounds = screen.Bounds;
-                var windowWidth = this.Width;
-                var windowHeight = this.Height;
-                // 居中显示
-                var centerX = (screenBounds.Width - windowWidth) / 2;
-                var centerY = (screenBounds.Height - windowHeight) / 2;
-                WindowStartupLocation = WindowStartupLocation.Manual;
-                Position = new PixelPoint((int)centerX, (int)centerY);
-            }
-        }
-        _lastSavedPosition = Position;
-        WindowStartupLocation = WindowStartupLocation.Manual;
+        // 设置窗口属性
+        LoadPosition();
 
+        // 动态构建 UI
+        BuildClockItems();
         
-
-        //加载时区配置并初始化时钟
+        // 加载时区配置并初始化时钟
         LoadConfigAndRefresh();
+
+        // 设置定时器，每 200 毫秒刷新一次时钟和位置
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(200)
@@ -90,6 +70,85 @@ public partial class TinyWindow : BaseWindow
             }, DispatcherPriority.Background);
         };
     }
+
+    private void LoadPosition()
+    {
+        this.Background = Brushes.Transparent;
+        this.PointerPressed += OnPointerPressed;
+        this.Topmost = true;
+        this.ShowInTaskbar = false;
+
+        // 加载保存的窗体位置
+        var config = ClockConfig.Load();
+        if (config.PrgSet.TinyWindowPosX.HasValue && config.PrgSet.TinyWindowPosY.HasValue)
+        {
+            Position = new PixelPoint(config.PrgSet.TinyWindowPosX.Value, config.PrgSet.TinyWindowPosY.Value);
+        }
+        else
+        {
+            var screen = Screens.Primary;
+            if (screen != null)
+            {
+                var screenBounds = screen.Bounds;
+                var windowWidth = this.Width;
+                var windowHeight = this.Height;
+                // 居中显示
+                var centerX = (screenBounds.Width - windowWidth) / 2;
+                var centerY = (screenBounds.Height - windowHeight) / 2;
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Position = new PixelPoint((int)centerX, (int)centerY);
+            }
+        }
+        _lastSavedPosition = Position;
+        WindowStartupLocation = WindowStartupLocation.Manual;
+    }
+
+    private void BuildClockItems()
+    {
+        // 清空原有的子控件（除了可能已经存在的）
+        TinyWrapPanel.Children.Clear();
+        _clockItems.Clear();
+
+        var config = ClockConfig.Load();
+        int index = 0;
+        // 为每个时区创建一个 ClockItem
+        foreach (var zone in config.TimeZoneSet.Zones)
+        {
+            var clock = new ClockItem
+            {
+                Margin = new Thickness(0, 0,0, 0),
+                TimeBackground = DefaultGradients[index % DefaultGradients.Length]
+            };
+            // 可以设置背景渐变
+            // clock.TimeBackground = ...;
+            TinyWrapPanel.Children.Add(clock);
+            _clockItems.Add(clock);
+            index++;
+        }
+
+        // 固定本地时钟（始终在最右侧）
+        _localClock = new ClockItem
+        {
+            Margin = new Thickness(0, 0, 0, 0),
+            TimeBackground = new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
+                GradientStops = new GradientStops
+            {
+                new GradientStop(Colors.Gold, 0),
+                new GradientStop(Colors.Orange, 1)
+            }
+            }
+        };
+        TinyWrapPanel.Children.Add(_localClock);
+
+        // 秒控件（可选）
+        _secondItem = new SecondItem();
+        TinyWrapPanel.Children.Add(_secondItem);
+
+        UpdateWindowWidth();
+    }
     private void CheckAndSavePosition()
     {
         var currentPos = Position;
@@ -112,14 +171,15 @@ public partial class TinyWindow : BaseWindow
     private void LoadConfigAndRefresh()
     {
         var config = ClockConfig.Load();
-
-        _timeZone1 = GetTimeZoneById(config.TimeZoneSet.TimeZone1_WinId, config.TimeZoneSet.TimeZone1_IanaId);
-        _timeZone2 = GetTimeZoneById(config.TimeZoneSet.TimeZone2_WinId, config.TimeZoneSet.TimeZone2_IanaId);
-        _label1 = config.TimeZoneSet.TimeZone1_Label;
-        _label2 = config.TimeZoneSet.TimeZone2_Label;
+        _zones.Clear();
+        foreach (var zone in config.TimeZoneSet.Zones)
+        {
+            var tz = GetTimeZoneById(zone.WinId, zone.IanaId);
+            _zones.Add((tz, zone.Label));
+        }
 
         //根据配置控制秒是否显示
-        Second.IsVisible = config.PrgSet.ShowSeconds;
+        _secondItem.IsVisible = config.PrgSet.ShowSeconds;
 
         RefreshClocks();
     }
@@ -128,32 +188,26 @@ public partial class TinyWindow : BaseWindow
     {
         DateTime utcNow = DateTime.UtcNow;
         DateTime localNow = DateTime.Now;
-
-        DateTime t1 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone1);
-        DateTime t2 = TimeZoneInfo.ConvertTimeFromUtc(utcNow, _timeZone2);
-
         var culture = new CultureInfo("zh-CN");
 
-        // 设置时钟1（配置时区1）
-        Clock1.SetDate($"{_label1} {t1.ToString("MM/dd ddd", culture).Replace("周", "")}");
-        Clock1.SetTime(t1.ToString("HH:mm"));  
+        for (int i = 0; i < _zones.Count && i < _clockItems.Count; i++)
+        {
+            var (tz, label) = _zones[i];
+            var dt = TimeZoneInfo.ConvertTimeFromUtc(utcNow, tz);
+            string dateStr = dt.ToString("MM-dd", culture);
+            string weekStr = dt.ToString("ddd", culture).Replace("周", "");
+            _clockItems[i].SetDate($"{label} {dateStr} {weekStr}");
+            _clockItems[i].SetTime(dt.ToString("HH:mm"));
+        }
 
-        // 设置时钟2（配置时区2）
-        Clock2.SetDate($"{_label2} {t2.ToString("MM/dd ddd", culture).Replace("周", "")}");
-        Clock2.SetTime(t2.ToString("HH:mm"));
+        // 设置固定显示的本地时间
+        string localDateStr = localNow.ToString("MM-dd", culture);
+        string localWeekStr = localNow.ToString("ddd", culture).Replace("周", "");
+        _localClock.SetDate($"本地 {localDateStr} {localWeekStr}");
+        _localClock.SetTime(localNow.ToString("HH:mm"));
 
-        // 设置时钟3（本地时间）
-        Clock3.SetDate($"本地 {localNow.ToString("MM/dd ddd", culture).Replace("周", "")}");
-        Clock3.SetTime(localNow.ToString("HH:mm"));
-
-        Second.SetSecond(localNow.ToString("ss"));
+        _secondItem.SetSecond(localNow.ToString("ss"));
     }
-
-    protected override void OnConfigUpdated()
-    {
-        LoadConfigAndRefresh();
-    }
-
     private TimeZoneInfo GetTimeZoneById(string winId, string ianaId)
     {
         try
@@ -172,7 +226,37 @@ public partial class TinyWindow : BaseWindow
             }
         }
     }
+    private void UpdateWindowWidth()
+    {
+        double totalWidth = 0;
+        foreach (Control child in TinyWrapPanel.Children)
+        {
+            double childWidth = child.Width;
+            var margin = child.Margin;
+            totalWidth += childWidth + margin.Left + margin.Right;
+        }
+        this.Width = totalWidth;
+    }
+    private static readonly IBrush[] DefaultGradients = new IBrush[]
+{
+    CreateGradientBrush("#FF416C", "#FF4B2B"),   // 红橙
+    CreateGradientBrush("#00B4DB", "#0083B0"),   // 蓝紫
+    CreateGradientBrush("#11998E", "#38EF7D")    // 翠绿
+};
 
+    private static IBrush CreateGradientBrush(string color1, string color2)
+    {
+        return new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(1, 0, RelativeUnit.Relative),
+            GradientStops = new GradientStops
+        {
+            new GradientStop(Color.Parse(color1), 0),
+            new GradientStop(Color.Parse(color2), 1)
+        }
+        };
+    }
     protected override void OnKeyDown(KeyEventArgs e)
     {
         if (e.Key == Key.F)
@@ -189,6 +273,10 @@ public partial class TinyWindow : BaseWindow
         this.Topmost = true;
         this.ShowInTaskbar = false;
     }
-  
+    protected override void OnConfigUpdated()
+    {
+        BuildClockItems();
+        LoadConfigAndRefresh();
+    }
 
 }
