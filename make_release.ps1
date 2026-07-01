@@ -26,8 +26,9 @@ $assemblyVersion = "$major.$minor.$patch.0"
 
 
 # 4. 按照运行时发布
-    $runtimes = @("win-x64", "linux-x64", "linux-arm64")
-    #$runtimes = @( "linux-x64", "linux-arm64")
+    # $runtimes = @("win-x64", "linux-x64", "linux-arm64")
+    # $runtimes = @( "linux-x64", "linux-arm64")
+    $runtimes = @( "osx-arm64")
 
 foreach ($rid in $runtimes) {
         Write-Host "`n=== 正在发布 $rid ===" -ForegroundColor Cyan
@@ -83,10 +84,10 @@ foreach ($rid in $runtimes) {
         Compress-Archive -Path "$bundledOutput\*" -DestinationPath $bundledZip -Force
 
     # 4.5 GitHub Release
-       Write-Host "发布到 github ..." -ForegroundColor Cyan
-       $tag = "v$version"
-       git tag -f -m "Release DualClock $version" $tag
-       git push origin $tag --force
+      # Write-Host "发布到 github ..." -ForegroundColor Cyan
+      # $tag = "v$version"
+      # git tag -f -m "Release DualClock $version" $tag
+      # git push origin $tag --force
       #
       # gh release create $tag `
       #      $baseZip `

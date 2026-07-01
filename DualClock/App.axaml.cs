@@ -50,7 +50,7 @@ namespace DualClock
         private static WindowIcon GetPlatformIcon()
         {
             string iconPath = OperatingSystem.IsWindows() ? "avares://DualClock/Assets/icon.ico"
-       : OperatingSystem.IsMacOS() ? "avares://DualClock/Assets/icon.icns"
+       : OperatingSystem.IsMacOS() ? "avares://DualClock/Assets/icon.png"
        : "avares://DualClock/Assets/icon.png";
 
             var uri = new Uri(iconPath);

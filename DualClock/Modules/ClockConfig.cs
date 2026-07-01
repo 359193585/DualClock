@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -36,7 +37,8 @@ namespace DualClock.Modules
     /// </summary>
     public class ClockConfig
     {
-        private const string ConfigPath = "config.json";
+        // 配置文件路径：始终与可执行文件在同一目录， 便于跨平台部署和更新
+        private static string ConfigPath => Path.Combine(AppContext.BaseDirectory, "config.json");
         public PrgConfig PrgSet { get; set; } = new PrgConfig();
         public TimeZoneConfig TimeZoneSet { get; set; } = new TimeZoneConfig();
 

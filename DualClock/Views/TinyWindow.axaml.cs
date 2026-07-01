@@ -8,6 +8,7 @@ using DualClock.Modules;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 namespace DualClock;
@@ -77,6 +78,12 @@ public partial class TinyWindow : BaseWindow
         this.PointerPressed += OnPointerPressed;
         this.Topmost = true;
         this.ShowInTaskbar = false;
+
+        // 处理透明背景兼容性
+        if (OperatingSystem.IsMacOS() || IsUOS())
+        {
+            this.Background = new SolidColorBrush(Color.Parse("#333333")); // 深灰，与 ClockItem 一致
+        }
 
         // 加载保存的窗体位置
         var config = ClockConfig.Load();
@@ -182,6 +189,7 @@ public partial class TinyWindow : BaseWindow
         _secondItem.IsVisible = config.PrgSet.ShowSeconds;
 
         RefreshClocks();
+        UpdateWindowWidth();
     }
 
     private void RefreshClocks()
@@ -256,6 +264,27 @@ public partial class TinyWindow : BaseWindow
             new GradientStop(Color.Parse(color2), 1)
         }
         };
+    }
+    private static bool IsUOS()
+    {
+        try
+        {
+            var osReleasePath = "/etc/os-release";
+            if (File.Exists(osReleasePath))
+            {
+                var lines = File.ReadAllLines(osReleasePath);
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("ID=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var id = line.Substring(3).Trim('"');
+                        return id == "uos" || id == "deepin";
+                    }
+                }
+            }
+        }
+        catch { }
+        return false;
     }
     protected override void OnKeyDown(KeyEventArgs e)
     {
