@@ -1,150 +1,131 @@
-<#
-.SYNOPSIS
-    将 Avalonia 自包含发布产物打包成 macOS .app 应用包。
-.DESCRIPTION
-    从指定的发布目录（如 publish/DualClock.2.0.23.osx-arm64-bundled）复制文件，
-    构建 .app 包，并生成 Info.plist。
-.PARAMETER PublishDir
-    发布产物的目录路径（例如 publish/DualClock.2.0.23.osx-arm64-bundled）。
-    如果未指定，则自动查找 publish 下最新的 osx-arm64-bundled 文件夹。
-.PARAMETER AppName
-    应用名称（用于 .app 文件名和内部标识）。
-    默认：DualClock。
-.PARAMETER BundleId
-    应用唯一标识符（反向域名）。
-    默认：com.yourcompany.dualclock。
-.PARAMETER Version
-    应用版本号。
-    默认：从文件夹名中提取，或使用 2.0.0。
-.PARAMETER OutputDir
-    生成的 .app 存放的父目录。
-    默认：当前目录下的 packages。
-.PARAMETER IconFile
-    可选的 .icns 图标文件路径（将复制到 Resources）。
-    默认：Assets/icon.icns（如果存在）。
-.EXAMPLE
-    .\PackageMacApp.ps1 -PublishDir "publish/DualClock.2.0.23.osx-arm64-bundled" -BundleId "com.example.dualclock"
-.EXAMPLE
-    .\PackageMacApp.ps1   # 自动查找最新的发布目录
-#>
+#!/bin/bash
+# 用法: ./package-mac.sh [版本号]
+# 例如: ./package-mac.sh 2.0.23
 
-param(
-    [string]$PublishDir,
-    [string]$AppName = "DualClock",
-    [string]$BundleId = "com.leison.dualclock",
-    [string]$Version,
-    [string]$OutputDir = "packages",
-    [string]$IconFile = "Assets/icon.icns"
+echo "mac app publishing..."
+set -e  # 遇到错误立即停止
+
+# 1. 配置
+APP_NAME="DualClock"
+BUNDLE_ID="com.leison.dualclock"
+VERSION=${1:-"2.0.0"}  # 从参数或默认值获取版本号
+
+# 定义多个可能的发布目录（按优先级）
+# 优先使用 WSL 本地目录（如果有），其次使用 Windows 挂载目录
+POSSIBLE_PATHS=(
+    "./publish"                              # WSL 本地目录
+    "/mnt/e/Develop_Vs2022/DualClock/publish" # Windows 挂载目录
 )
 
-# 如果未指定发布目录，自动查找最新的 osx-arm64-bundled
-if (-not $PublishDir) {
-    $publishBase = "publish"
-    if (Test-Path $publishBase) {
-        $folders = Get-ChildItem -Path $publishBase -Directory | Where-Object { $_.Name -like "DualClock.*.osx-arm64-bundled" } | Sort-Object Name -Descending
-        if ($folders.Count -gt 0) {
-            $PublishDir = $folders[0].FullName
-            Write-Host "🔍 自动选择最新的发布目录: $PublishDir" -ForegroundColor Cyan
-        }
-        else {
-            Write-Error "未找到符合 'DualClock.*.osx-arm64-bundled' 的发布目录，请使用 -PublishDir 指定。"
-            exit 1
-        }
-    }
-    else {
-        Write-Error "未找到 publish 文件夹，请先运行 publish.ps1 或使用 -PublishDir 指定。"
-        exit 1
-    }
-}
+PUBLISH_BASE=""
+for path in "${POSSIBLE_PATHS[@]}"; do
+    if [ -d "$path" ] && ls "$path"/DualClock.*.osx-arm64-bundled 1>/dev/null 2>&1; then
+        PUBLISH_BASE="$path"
+        echo "✅ 找到发布目录: $PUBLISH_BASE"
+        break
+    fi
+done
 
-# 确保 PublishDir 存在
-if (-not (Test-Path $PublishDir)) {
-    Write-Error "发布目录不存在: $PublishDir"
+if [ -z "$PUBLISH_BASE" ]; then
+    echo "❌ 未找到任何包含 DualClock.*.osx-arm64-bundled 的发布目录"
+    echo "请检查路径: ${POSSIBLE_PATHS[@]}"
     exit 1
-}
+fi
 
-# 如果未指定版本号，尝试从文件夹名提取
-if (-not $Version) {
-    $folderName = Split-Path $PublishDir -Leaf
-    if ($folderName -match 'DualClock\.(\d+\.\d+\.\d+)\.osx-arm64-bundled') {
-        $Version = $matches[1]
-    }
-    else {
-        $Version = "2.0.0"
-    }
-}
+# 2. 查找最新的 osx-arm64-bundled 目录
+BUNDLED_DIR=$(ls -td "$PUBLISH_BASE"/DualClock.*.osx-arm64-bundled 2>/dev/null | head -1)
+if [ -z "$BUNDLED_DIR" ]; then
+    echo "❌ 未找到任何 DualClock.*.osx-arm64-bundled 目录"
+    exit 1
+fi
+echo "📁 使用发布目录: $BUNDLED_DIR"
 
-# 创建 .app 目录
-$AppDir = Join-Path $OutputDir "$AppName.app"
-$MacOSDir = Join-Path $AppDir "Contents/MacOS"
-$ResourcesDir = Join-Path $AppDir "Contents/Resources"
+# 如果版本号未通过参数指定，则从文件夹名提取
+if [ "$VERSION" = "2.0.0" ]; then
+    FOLDER_NAME=$(basename "$BUNDLED_DIR")
+    if [[ $FOLDER_NAME =~ DualClock\.([0-9]+\.[0-9]+\.[0-9]+)\.osx-arm64-bundled ]]; then
+        VERSION="${BASH_REMATCH[1]}"
+        echo "📌 从文件夹名提取版本号: $VERSION"
+    else
+        echo "⚠️ 无法从文件夹名提取版本号，使用默认: $VERSION"
+    fi
+fi
 
-# 1. 清理并创建目录
-if (Test-Path $AppDir) { Remove-Item -Recurse -Force $AppDir }
-New-Item -ItemType Directory -Path $MacOSDir -Force | Out-Null
-New-Item -ItemType Directory -Path $ResourcesDir -Force | Out-Null
+# 3. 创建临时工作目录（在 WSL 本地，保证权限）
+WORK_DIR="$HOME/develop/DualClock/tmp_mac_pack"
+rm -rf "$WORK_DIR"
+mkdir -p "$WORK_DIR"
+echo "📂 临时工作目录: $WORK_DIR"
 
-# 2. 复制所有发布文件到 MacOS（包括所有 dll、json、可执行文件）
-Copy-Item -Path "$PublishDir\*" -Destination $MacOSDir -Recurse -Force
+# 4. 复制发布产物到临时目录（从 Windows 复制过来，获得 WSL 文件系统的权限）
+APP_DIR="$WORK_DIR/$APP_NAME.app"
+MACOS_DIR="$APP_DIR/Contents/MacOS"
+RESOURCES_DIR="$APP_DIR/Contents/Resources"
 
-# 3. 如果提供了图标文件（.icns），复制到 Resources
-# 查找图标文件
-$iconSource = $null
-$iconFileName = ""
+mkdir -p "$MACOS_DIR"
+mkdir -p "$RESOURCES_DIR"
 
-if ($IconFile -and (Test-Path $IconFile)) {
-    $iconSource = $IconFile
-}
-else {
-    $candidate1 = Join-Path $PublishDir "Assets/icon.icns"
-    if (Test-Path $candidate1) { $iconSource = $candidate1 }
-    else {
-        $candidate2 = Join-Path $PublishDir "icon.icns"
-        if (Test-Path $candidate2) { $iconSource = $candidate2 }
-    }
-}
+echo "📦 正在复制发布产物..."
+cp -r "$BUNDLED_DIR"/* "$MACOS_DIR/"
 
-if ($iconSource) {
-    Copy-Item -Path $iconSource -Destination $ResourcesDir -Force
-    $iconFileName = Split-Path $iconSource -Leaf
-    Write-Host "✅ 已找到图标: $iconFileName" -ForegroundColor Green
-}
-else {
-    Write-Host "⚠️ 未找到图标文件，将使用默认图标" -ForegroundColor Yellow
-}
+# 5. 查找并复制图标（如果存在）
+ICON_SOURCE=""
+if [ -f "$MACOS_DIR/Assets/icon.icns" ]; then
+    ICON_SOURCE="$MACOS_DIR/Assets/icon.icns"
+elif [ -f "$MACOS_DIR/icon.icns" ]; then
+    ICON_SOURCE="$MACOS_DIR/icon.icns"
+fi
 
-# 4. 生成 Info.plist
-$plistContent = @"
+ICON_FILE_NAME=""
+if [ -n "$ICON_SOURCE" ]; then
+    cp "$ICON_SOURCE" "$RESOURCES_DIR/"
+    ICON_FILE_NAME=$(basename "$ICON_SOURCE")
+    echo "✅ 已找到图标: $ICON_FILE_NAME"
+else
+    echo "⚠️ 未找到图标文件"
+fi
+
+# 6. 生成 Info.plist
+cat > "$APP_DIR/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>$AppName</string>
+    <string>$APP_NAME</string>
     <key>CFBundleName</key>
-    <string>$AppName</string>
+    <string>$APP_NAME</string>
     <key>CFBundleDisplayName</key>
-    <string>$AppName</string>
+    <string>$APP_NAME</string>
     <key>CFBundleIdentifier</key>
-    <string>$BundleId</string>
+    <string>$BUNDLE_ID</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>$Version</string>
+    <string>$VERSION</string>
     <key>CFBundleVersion</key>
-    <string>$Version</string>
+    <string>$VERSION</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>CFBundleIconFile</key>
-    <string>$iconFileName</string>
+    <string>$ICON_FILE_NAME</string>
 </dict>
 </plist>
-"@
-$plistPath = Join-Path $AppDir "Contents/Info.plist"
-$plistContent | Out-File -FilePath $plistPath -Encoding utf8
+EOF
 
-# 5. 提示
-Write-Host "✅ .app 包已生成于: $((Resolve-Path $AppDir).Path)" -ForegroundColor Green
-Write-Host "⚠️  如果是在 Windows 上打包，请在 macOS 上执行以下命令赋予执行权限：" -ForegroundColor Yellow
-Write-Host "    chmod +x '$((Resolve-Path $AppDir).Path)/Contents/MacOS/$AppName'" -ForegroundColor Cyan
-Write-Host "然后双击 .app 文件即可运行。" -ForegroundColor Green
+# 7. 赋予执行权限（在 WSL 本地，有效）
+chmod +x "$MACOS_DIR/$APP_NAME"
+
+# 8. 打包为 .tar.gz（保留权限）
+# 输出到 Windows 发布目录
+OUTPUT_DIR="/mnt/e/Develop_Vs2022/DualClock/publish/packages"
+mkdir -p "$OUTPUT_DIR"
+TAR_NAME="$OUTPUT_DIR/$APP_NAME.$VERSION.macos-app.tar.gz"
+tar -czf "$TAR_NAME" -C "$WORK_DIR" "$APP_NAME.app"
+
+echo "✅ .app 已生成并打包: $TAR_NAME"
+echo "📦 最终产物: $TAR_NAME"
+
+# 9. 清理临时目录（可选）
+#rm -rf "$WORK_DIR"
+#echo "🧹 临时目录已清理"
