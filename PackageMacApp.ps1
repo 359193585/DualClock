@@ -129,3 +129,5 @@ echo "📦 最终产物: $TAR_NAME"
 # 9. 清理临时目录（可选）
 #rm -rf "$WORK_DIR"
 #echo "🧹 临时目录已清理"
+
+
