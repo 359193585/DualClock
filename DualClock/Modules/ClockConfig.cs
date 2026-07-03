@@ -71,6 +71,12 @@ namespace DualClock.Modules
 
         public static ClockConfig Load()
         {
+            var path = ConfigPath;
+            var logPath = Path.Combine(Path.GetTempPath(), "DualClock.log");
+
+            // 写入诊断信息
+            File.AppendAllText(logPath, $"[{DateTime.Now}] Load() called. ConfigPath: {path}, Exists: {File.Exists(path)}\n");
+
             if (File.Exists(ConfigPath))
             {
                 try

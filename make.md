@@ -19,3 +19,11 @@ After running the command, you can find the published output in the `bin/Release
 dotnet publish -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true
 ```
 This command will create a self-contained single file executable for the Linux x64 platform.
+
+
+# some tools
+
+- Mac ICNS 图标生成器(https://d1tools.com/tools/icns-generator/)
+- 
+
+
