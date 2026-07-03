@@ -118,7 +118,7 @@ chmod +x "$MACOS_DIR/$APP_NAME"
 
 # 8. 打包为 .tar.gz（保留权限）
 # 输出到 Windows 发布目录
-OUTPUT_DIR="/mnt/e/Develop_Vs2022/DualClock/publish/packages"
+OUTPUT_DIR="/mnt/e/Develop_Vs2022/DualClock/publish"
 mkdir -p "$OUTPUT_DIR"
 TAR_NAME="$OUTPUT_DIR/$APP_NAME.$VERSION.macos-app.tar.gz"
 tar -czf "$TAR_NAME" -C "$WORK_DIR" "$APP_NAME.app"

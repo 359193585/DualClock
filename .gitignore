@@ -6,6 +6,7 @@
 *.cache
 *.cachefile
 
+
 ## Build outputs
 bin/
 obj/
@@ -31,6 +32,7 @@ Thumbs.db
 *.bak
 *.swp
 make_release_1.ps1
+.DS_Store/
 
 
 
