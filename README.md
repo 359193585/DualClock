@@ -12,6 +12,6 @@
 - 可配置自动启动（linux、windows支持）
 
 <div align="center">
-    <img width="474" height="275" alt="image" src="https://github.com/user-attachments/assets/1afb83d2-141e-46f4-b9eb-9adf6265e0b0" />
+   <img width="474" height="179" alt="image" src="https://github.com/user-attachments/assets/b4b4cd74-5688-4351-80eb-c41dabcfd946" />
 
 </div>
