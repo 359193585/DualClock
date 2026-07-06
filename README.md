@@ -8,6 +8,7 @@
 - 小窗显示
 <div align="center">
    <img width="430" height="60" alt="image" src="https://github.com/user-attachments/assets/680d71e2-7ec5-4692-8730-d64476a67c0f" />
+</div>
 
 - 可配置自动启动（linux、windows支持）
 
