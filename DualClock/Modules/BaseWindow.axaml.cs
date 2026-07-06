@@ -1,6 +1,9 @@
 ﻿// BaseWindow.axaml.cs
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls;
 using Avalonia.Input;
+using DualClock.Views;
 using System;
 
 namespace DualClock
@@ -8,6 +11,14 @@ namespace DualClock
     public class BaseWindow : Window
     {
         public BaseWindow()
+        {
+            ContextMenu globalMenu = CreateContentMenu();
+
+            this.ContextMenu = globalMenu;
+            this.Icon = App.AppIcon;
+        }
+
+        private ContextMenu CreateContentMenu()
         {
             var globalMenu = new ContextMenu();
             globalMenu.Cursor = new Cursor(StandardCursorType.Arrow);
@@ -19,6 +30,13 @@ namespace DualClock
             itemSettings.Cursor = new Cursor(StandardCursorType.Arrow);
             itemSettings.Click += OnGlobalSettingsClicked;
 
+            var itemAbout = new MenuItem
+            {
+                Header = "关于"
+            };
+            itemAbout.Cursor = new Cursor(StandardCursorType.Arrow);
+            itemAbout.Click += OnGlobalAboutClicked;
+
             var separator = new Separator();
 
             var itemExit = new MenuItem
@@ -29,13 +47,22 @@ namespace DualClock
             itemExit.Click += OnGlobalExitClicked;
 
             globalMenu.Items.Add(itemSettings);
+            globalMenu.Items.Add(itemAbout);
             globalMenu.Items.Add(separator);
             globalMenu.Items.Add(itemExit);
-
-            this.ContextMenu = globalMenu;
-            this.Icon = App.AppIcon;
+            return globalMenu;
         }
 
+        private async void OnGlobalAboutClicked(object? sender, EventArgs e)
+        {
+            var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+            var mainWindow = lifetime?.MainWindow;
+            if (mainWindow != null)
+            {
+                var aboutWindow = new AboutWindow();
+                await aboutWindow.ShowDialog(mainWindow);
+            }
+        }
         private void OnGlobalSettingsClicked(object? sender, EventArgs e)
         {
             Cursor = Cursor.Default;
@@ -63,6 +90,7 @@ namespace DualClock
         protected virtual void OnConfigUpdated()
         {
         }
+
         
     }
 }

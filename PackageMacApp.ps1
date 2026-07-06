@@ -121,7 +121,7 @@ chmod +x "$MACOS_DIR/$APP_NAME"
 OUTPUT_DIR="/mnt/e/Develop_Vs2022/DualClock/publish"
 mkdir -p "$OUTPUT_DIR"
 TAR_NAME="$OUTPUT_DIR/$APP_NAME.$VERSION.macos-app.tar.gz"
-tar -czf "$TAR_NAME" -C "$WORK_DIR" "$APP_NAME.app"
+tar -czf "$TAR_NAME"  -C "$WORK_DIR" "$APP_NAME.app"
 
 echo "✅ .app 已生成并打包: $TAR_NAME"
 echo "📦 最终产物: $TAR_NAME"

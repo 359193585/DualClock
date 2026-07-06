@@ -12,6 +12,8 @@ public partial class SettingsWindow : Window
     public SettingsWindow()
     {
         InitializeComponent();
+        this.Icon = App.AppIcon;
+
         LoadCurrentSelection();
     }
 

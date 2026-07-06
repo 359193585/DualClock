@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using DualClock.Modules;
+using DualClock.Views;
 using System;
 
 namespace DualClock
@@ -57,6 +58,14 @@ namespace DualClock
             using var stream = AssetLoader.Open(uri);
             return new WindowIcon(stream);
         }
-
+        private async void OnAboutClick(object? sender, EventArgs e)
+        {
+            var mainWindow = (ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            if (mainWindow != null)
+            {
+                var aboutWindow = new AboutWindow();
+                await aboutWindow.ShowDialog(mainWindow);
+            }
+        }
     }
 }

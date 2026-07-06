@@ -28,8 +28,9 @@ $assemblyVersion = "$major.$minor.$patch.0"
 # 4. 按照运行时发布
     # $runtimes = @( "linux-x64", "linux-arm64")
     # $runtimes = @( "osx-arm64")
-    # $runtimes = @( "win-x64","osx-arm64")
-    $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-arm64")
+    # $runtimes = @( "win-x64")
+     $runtimes = @( "osx-arm64")
+    # $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-arm64")
 
 foreach ($rid in $runtimes) {
         Write-Host "`n=== 正在发布 $rid ===" -ForegroundColor Cyan

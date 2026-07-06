@@ -1,15 +1,21 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DualClock.App"
-             RequestedThemeVariant="Default">
+             RequestedThemeVariant="Default"
+             Name="DualClock">
 
     <Application.Styles>
         <FluentTheme />
 
         <Style Selector=":is(WindowBase)">
-        <Setter Property="Topmost" Value="True" />
-
-    </Style>
-
+            <Setter Property="Topmost" Value="True" />
+        </Style>
     </Application.Styles>
+
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="About DualClock" Click="OnAboutClick" />
+        </NativeMenu>
+    </NativeMenu.Menu>
+
 </Application>

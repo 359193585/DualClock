@@ -1,0 +1,72 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DualClock.Views.AboutWindow"
+        Title="About DualClock"
+        Width="360"
+        Height="240"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{DynamicResource SystemBackgroundBrush}">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- 图标 -->
+        <Image Grid.Row="0"
+               Source="avares://DualClock/Assets/icon.png"
+               Width="48"
+               Height="48"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,8" />
+        
+        <!-- 应用名称 -->
+        <TextBlock Grid.Row="1"
+                   Text="DualClock"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center" />
+        
+        <!-- 版本号 -->
+        <TextBlock Grid.Row="2"
+                   x:Name="VersionTextBlock"
+                   Text="Version 2.0.0"
+                   FontSize="14"
+                   Foreground="{DynamicResource SystemAccentColor}"
+                   HorizontalAlignment="Center"
+                   Margin="0,4,0,0" />
+        
+        <!-- 版权信息 -->
+        <TextBlock Grid.Row="3"
+                   Text="© 2026 Leison. All rights reserved."
+                   FontSize="12"
+                   Foreground="{DynamicResource SystemTextColor}"
+                   HorizontalAlignment="Center"
+                   Opacity="0.7"
+                   Margin="0,8,0,0" />
+        
+        <!-- 描述（可选） -->
+        <TextBlock Grid.Row="4"
+                   Text="双时钟跨平台桌面工具"
+                   FontSize="12"
+                   Foreground="{DynamicResource SystemTextColor}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Opacity="0.6" />
+        
+        <!-- 确定按钮 -->
+        <Button Grid.Row="5"
+                Content="确定"
+                Width="80"
+                Height="30"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="OnOkClick" />
+    </Grid>
+</Window>
