@@ -63,11 +63,13 @@ namespace DualClock.Modules
 
     // ==================== 美洲 ====================
     // --- 美国 & 加拿大 ---
+    new TimeZoneItem { TagValue = "Pacific Standard Time|America/San Francisco|旧金山", DisplayName = "旧金山 (美国太平洋时间)" },
     new TimeZoneItem { TagValue = "Pacific Standard Time|America/Los_Angeles|洛杉矶", DisplayName = "洛杉矶 (美国太平洋时间)" },
     new TimeZoneItem { TagValue = "Pacific Standard Time|America/Vancouver|温哥华", DisplayName = "温哥华 (加拿大)" },
     new TimeZoneItem { TagValue = "Pacific Standard Time|America/Seattle|西雅图", DisplayName = "西雅图 (美国太平洋时间)" },
     new TimeZoneItem { TagValue = "Mountain Standard Time|America/Denver|丹佛", DisplayName = "丹佛 (美国山地时间)" },
     new TimeZoneItem { TagValue = "Mountain Standard Time|America/Phoenix|凤凰城", DisplayName = "凤凰城 (美国山地时间, 无夏令时)" },
+    new TimeZoneItem { TagValue = "Eastern Standard Time|America/Pittsburgh|匹兹堡", DisplayName = "匹兹堡 (美国东部时间)" },
     new TimeZoneItem { TagValue = "Central Standard Time|America/Chicago|芝加哥", DisplayName = "芝加哥 (美国中部时间)" },
     new TimeZoneItem { TagValue = "Central Standard Time|America/Mexico_City|墨西哥城", DisplayName = "墨西哥城 (墨西哥)" },
     new TimeZoneItem { TagValue = "Eastern Standard Time|America/New_York|纽约", DisplayName = "纽约 (美国东部时间)" },

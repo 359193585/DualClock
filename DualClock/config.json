@@ -8,13 +8,12 @@
     "Zones": [
       {
         "WinId": "Pacific Standard Time",
-        "IanaId": "America/Los_Angeles",
+        "IanaId": "America/San Francisco",
         "Label": "旧金山"
       },
-
       {
         "WinId": "Eastern Standard Time",
-        "IanaId": "America/New_York",
+        "IanaId": "America/Pittsburgh",
         "Label": "匹兹堡"
       },
       {

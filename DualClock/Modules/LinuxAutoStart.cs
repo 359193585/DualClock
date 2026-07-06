@@ -34,7 +34,7 @@ X-GNOME-Autostart-enabled=true";
                 // 3. 赋予可执行权限 (有时需要)
                 System.Diagnostics.Process.Start("chmod", $"+x \"{desktopFilePath}\"");
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：设置开机启动失败
             }
@@ -52,7 +52,7 @@ X-GNOME-Autostart-enabled=true";
                     File.Delete(desktopFilePath);
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：取消开机启动失败
             }

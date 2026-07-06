@@ -46,7 +46,7 @@ namespace DualClock.Modules
                 var loadCmd = $"-c \"launchctl load {plistFilePath}\"";
                 System.Diagnostics.Process.Start("/bin/bash", loadCmd);
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：设置开机启动失败
             }
@@ -69,7 +69,7 @@ namespace DualClock.Modules
                     File.Delete(plistFilePath);
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：取消开机启动失败
             }

@@ -22,7 +22,7 @@ namespace DualClock.Modules
                     key.SetValue(appName, $"\"{appPath}\"");
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：设置开机启动失败
             }
@@ -40,7 +40,7 @@ namespace DualClock.Modules
                     key.DeleteValue(appName);
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 // 记录日志：取消开机启动失败
             }

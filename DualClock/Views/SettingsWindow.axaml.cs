@@ -2,107 +2,141 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using DualClock.Modules;
 using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace DualClock;
 
+/// <summary>
+/// 用于动态时区列表的条目包装类
+/// </summary>
+public class ZoneEntry : INotifyPropertyChanged
+{
+    private TimeZoneItem? _selectedZone;
+    public TimeZoneItem? SelectedZone
+    {
+        get => _selectedZone;
+        set
+        {
+            if (_selectedZone != value)
+            {
+                _selectedZone = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
 public partial class SettingsWindow : Window
 {
     public event Action? ConfigUpdated;
 
+    // 绑定到 ItemsControl 的集合
+    public ObservableCollection<ZoneEntry> ZonesCollection { get; } = new();
+
     public SettingsWindow()
     {
         InitializeComponent();
-        this.Icon = App.AppIcon;
-
+        DataContext = this;
         LoadCurrentSelection();
     }
 
     private void LoadCurrentSelection()
     {
         var config = ClockConfig.Load();
-        var zones = config.TimeZoneSet.Zones;
 
-        var zone1 = zones.Count > 0 ? zones[0] : new TimeZoneItemConfig
+        // 加载时区列表
+        ZonesCollection.Clear();
+        foreach (var zone in config.TimeZoneSet.Zones)
         {
-            WinId = "Pacific Standard Time",
-            IanaId = "America/Los_Angeles",
-            Label = "旧金山"
-        };
-        var zone2 = zones.Count > 1 ? zones[1] : new TimeZoneItemConfig
-        {
-            WinId = "China Standard Time",
-            IanaId = "Asia/Shanghai",
-            Label = "北京"
-        };
-        SetComboValue(ComboZone1, zone1.IanaId);
-        SetComboValue(ComboZone2, zone2.IanaId);
+            var entry = new ZoneEntry();
+            // 根据 IanaId 或 WinId 查找匹配的 TimeZoneItem
+            var matched = ClockConfig.AllZones.FirstOrDefault(
+                z => z.TagValue.Contains(zone.IanaId) || z.TagValue.Contains(zone.WinId));
+            entry.SelectedZone = matched;
+            ZonesCollection.Add(entry);
+        }
 
-        ComboStartWindow.SelectedIndex = config.PrgSet.StartWindow; // 0或1
+        // 如果列表为空，添加一个默认空项
+        if (ZonesCollection.Count == 0)
+        {
+            ZonesCollection.Add(new ZoneEntry());
+        }
+
+        ComboStartWindow.SelectedIndex = config.PrgSet.StartWindow;
         CheckAutoStart.IsChecked = config.PrgSet.AutoStart;
-
         CheckShowSeconds.IsChecked = config.PrgSet.ShowSeconds;
     }
 
-    private void SetComboValue(ComboBox comboBox, string ianaId)
+    private void OnAddZoneClick(object sender, RoutedEventArgs e)
     {
-        var items = comboBox.Items;
-        if (items == null) return;
-        foreach (object obj in items)  
+        ZonesCollection.Add(new ZoneEntry());
+    }
+
+    private void RemoveZone(ZoneEntry entry)
+    {
+        if (ZonesCollection.Count <= 1)
         {
-            if (obj is TimeZoneItem item && item.TagValue != null && item.TagValue.Contains(ianaId))
-            {
-                comboBox.SelectedItem = item;
-                return;
-            }
+            // 至少保留一个时区项
+            return;
         }
+        ZonesCollection.Remove(entry);
     }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
-        if (ComboZone1.SelectedItem is TimeZoneItem item1 && ComboZone2.SelectedItem is TimeZoneItem item2)
+        var config = ClockConfig.Load();
+
+        // 更新时区列表
+        config.TimeZoneSet.Zones.Clear();
+        foreach (var entry in ZonesCollection)
         {
-            var parts1 = item1.TagValue.Split('|');
-            var parts2 = item2.TagValue.Split('|');
-
-            var config = ClockConfig.Load();
-
-            // 构建或更新 Zones 列表：确保至少有两个元素
-            var zones = config.TimeZoneSet.Zones;
-            if (zones.Count == 0)
+            if (entry.SelectedZone == null) continue;
+            var parts = entry.SelectedZone.TagValue.Split('|');
+            if (parts.Length == 3)
             {
-                zones.Add(new TimeZoneItemConfig());
-                zones.Add(new TimeZoneItemConfig());
+                config.TimeZoneSet.Zones.Add(new TimeZoneItemConfig
+                {
+                    WinId = parts[0],
+                    IanaId = parts[1],
+                    Label = parts[2]
+                });
             }
-            else if (zones.Count == 1)
+        }
+
+        // 如果列表为空，添加默认时区
+        if (config.TimeZoneSet.Zones.Count == 0)
+        {
+            config.TimeZoneSet.Zones.Add(new TimeZoneItemConfig
             {
-                zones.Add(new TimeZoneItemConfig());
-            }
+                WinId = "China Standard Time",
+                IanaId = "Asia/Shanghai",
+                Label = "北京"
+            });
+        }
 
-            // 更新前两个时区，保留列表中其他时区（如果有的话），实现“保存全部配置”。
-            zones[0].WinId = parts1[0];
-            zones[0].IanaId = parts1[1];
-            zones[0].Label = parts1[2];
+        // 更新程序设置
+        config.PrgSet.StartWindow = ComboStartWindow.SelectedIndex;
+        config.PrgSet.AutoStart = CheckAutoStart.IsChecked == true;
+        config.PrgSet.ShowSeconds = CheckShowSeconds.IsChecked == true;
 
-            zones[1].WinId = parts2[0];
-            zones[1].IanaId = parts2[1];
-            zones[1].Label = parts2[2];
+        config.Save();
 
+        ConfigUpdated?.Invoke();
+        Close();
+    }
 
-            // 其他配置保存
-            config.PrgSet.StartWindow = ComboStartWindow.SelectedIndex; // 0 或 1
-            config.PrgSet.AutoStart = CheckAutoStart.IsChecked == true;
-
-            config.PrgSet.ShowSeconds = CheckShowSeconds.IsChecked == true;
-
-            config.Save();
-
-            ConfigUpdated?.Invoke();
-            Close();
-
-            if (config.PrgSet.AutoStart)
-                AutoStartManager.Enable("DualClock");
-            else
-                AutoStartManager.Disable("DualClock");
+    // 删除按钮的命令处理（通过 XAML 的 Command 绑定）
+    private void OnRemoveZoneClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.DataContext is ZoneEntry entry)
+        {
+            RemoveZone(entry);
         }
     }
 }
