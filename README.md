@@ -7,11 +7,12 @@
 
 - 小窗显示
 <div align="center">
-    <img width="301" height="60" alt="image" src="https://github.com/user-attachments/assets/15829f2f-931e-4f6c-a37d-079f7708409a" />
+   <img width="430" height="60" alt="image" src="https://github.com/user-attachments/assets/680d71e2-7ec5-4692-8730-d64476a67c0f" />
 </div>
 
 - 可配置自动启动（linux、windows支持）
 
 <div align="center">
-    <img width="402" height="482" alt="image" src="https://github.com/user-attachments/assets/16535740-e5fc-4652-b369-73cd1978aa9e" />
+   <img width="474" height="179" alt="image" src="https://github.com/user-attachments/assets/b4b4cd74-5688-4351-80eb-c41dabcfd946" />
+
 </div>
