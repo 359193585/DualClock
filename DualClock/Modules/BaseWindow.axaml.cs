@@ -1,8 +1,10 @@
 ﻿// BaseWindow.axaml.cs
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using DualClock.Views;
 using System;
 
@@ -25,14 +27,16 @@ namespace DualClock
 
             var itemSettings = new MenuItem
             {
-                Header = "程序设置..."
+                Header = "程序设置...",
+                Icon = LoadIcon("settings.ico")
             };
             itemSettings.Cursor = new Cursor(StandardCursorType.Arrow);
             itemSettings.Click += OnGlobalSettingsClicked;
 
             var itemAbout = new MenuItem
             {
-                Header = "关于"
+                Header = "关于",
+                Icon = LoadIcon("about.ico")
             };
             itemAbout.Cursor = new Cursor(StandardCursorType.Arrow);
             itemAbout.Click += OnGlobalAboutClicked;
@@ -41,7 +45,8 @@ namespace DualClock
 
             var itemExit = new MenuItem
             {
-                Header = "退出程序"
+                Header = "退出程序",
+                Icon = LoadIcon("exit.ico")
             };
             itemExit.Cursor = new Cursor(StandardCursorType.Arrow);
             itemExit.Click += OnGlobalExitClicked;
@@ -51,6 +56,29 @@ namespace DualClock
             globalMenu.Items.Add(separator);
             globalMenu.Items.Add(itemExit);
             return globalMenu;
+        }
+
+        private Image? LoadIcon(string fileName)
+        {
+            try
+            {
+                var uri = new Uri($"avares://DualClock/Assets/{fileName}");
+                if (!AssetLoader.Exists(uri))
+                    return null;
+
+                using var stream = AssetLoader.Open(uri);
+                return new Image
+                {
+                    Source = new Bitmap(stream),
+                    Width = 16,
+                    Height = 16,
+                    Margin = new Thickness(0, 0, 4, 0)
+                };
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private async void OnGlobalAboutClicked(object? sender, EventArgs e)
@@ -72,14 +100,14 @@ namespace DualClock
                 OnConfigUpdated();
             };
 
-            settingsWin.ShowDialog(this);
-
             settingsWin.Closed += (s, ev) =>
             {
                 // 全屏光标恢复（基类通用）
                 if (WindowState == WindowState.FullScreen)
                     Cursor = new Cursor(StandardCursorType.None);
             };
+            settingsWin.ShowDialog(this);
+
 
         }
 

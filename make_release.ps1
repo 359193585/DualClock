@@ -20,6 +20,7 @@ $minor = 0
 $version = "$major.$minor.$patch"
 $assemblyVersion = "$major.$minor.$patch.0"
 
+Write-Host "=== 发布 DualClock $version ===" -ForegroundColor Green
 
 # 3. 清理旧包
        if (Test-Path  "publish") { Remove-Item -Recurse -Force  "publish" }
@@ -30,7 +31,8 @@ $assemblyVersion = "$major.$minor.$patch.0"
     # $runtimes = @( "osx-arm64")
     # $runtimes = @( "linux-x64")
     # $runtimes = @( "linux-x64", "linux-arm64")
-     $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-arm64")
+    # $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-arm64")
+     $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-x64","osx-arm64")
 
 foreach ($rid in $runtimes) {
         Write-Host "`n=== 正在发布 $rid ===" -ForegroundColor Cyan

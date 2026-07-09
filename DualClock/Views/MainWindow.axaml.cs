@@ -149,7 +149,6 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
 
         LocalTimeDisplay = $"本地时间: {localNow:yyyy-MM-dd HH:mm:ss}";
     }
-    
     private void MenuClose(object sender, RoutedEventArgs e) => Close();
     private static TimeZoneInfo GetTimeZoneById(string windowsId, string ianaId)
     {
@@ -175,8 +174,12 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
 
         this.Focus();
     }
-   
 
+    protected override void OnClosed(EventArgs e)
+    {
+        WindowManager.CloseAllWindows();
+
+    }
     //  ESC, f event to exit full screen or close the app ,this handleed in basewindow
     // now hadle T to show tinywindow
     protected override void OnKeyDown(KeyEventArgs e)
@@ -193,8 +196,6 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
             else
             {
                 WindowManager.CloseAllWindows();
-                //Close(); // 退出程序
-                Environment.Exit(0);
 
             }
             e.Handled = true;

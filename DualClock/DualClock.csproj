@@ -5,14 +5,21 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>  
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Assets\about.ico" />
+    <None Remove="Assets\exit.ico" />
+    <None Remove="Assets\settings.ico" />
+  </ItemGroup>
   
   <ItemGroup>
-    <AvaloniaResource Include="Assets\icon.icns" />
-    <AvaloniaResource Include="Assets\icon.png" />
-	  <None Include="Assets\icon.png" CopyToOutputDirectory="PreserveNewest" />
-	  <None Include="Assets\icon.icns" CopyToOutputDirectory="PreserveNewest" />
-	  <None Include="Assets\icon.ico" CopyToOutputDirectory="PreserveNewest" />
+	  <AvaloniaResource Include="Assets\*.png" />
+	  <AvaloniaResource Include="Assets\*.ico" />
+	  <AvaloniaResource Include="Assets\*.icns" />
+	  <None Include="Assets\*.png" CopyToOutputDirectory="PreserveNewest" />
+	  <None Include="Assets\*.ico" CopyToOutputDirectory="PreserveNewest" />
+	  <None Include="Assets\*.icns" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

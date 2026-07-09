@@ -55,14 +55,12 @@ public partial class SettingsWindow : Window
         foreach (var zone in config.TimeZoneSet.Zones)
         {
             var entry = new ZoneEntry();
-            // 根据 IanaId 或 WinId 查找匹配的 TimeZoneItem
             var matched = ClockConfig.AllZones.FirstOrDefault(
                 z => z.TagValue.Contains(zone.IanaId) || z.TagValue.Contains(zone.WinId));
             entry.SelectedZone = matched;
             ZonesCollection.Add(entry);
         }
 
-        // 如果列表为空，添加一个默认空项
         if (ZonesCollection.Count == 0)
         {
             ZonesCollection.Add(new ZoneEntry());

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
+using System;
 
 namespace DualClock
 {
@@ -70,20 +71,25 @@ namespace DualClock
             }
         }
 
-        // 当 TinyWindow 被关闭时，显示主窗口（用于 Alt+F4 等）
+        // 当 TinyWindow 被关闭时，尝试显示主窗口
         public static void OnTinyWindowClosed()
         {
-            // 如果主窗口未关闭且隐藏，则显示它
-            if (_mainWindow != null && !_mainWindow.IsVisible)
+            try
             {
-                _mainWindow.Show();
-                _mainWindow.Focus();
+                // 如果主窗口未关闭且隐藏，则显示它
+                if (_mainWindow != null && !_mainWindow.IsVisible)
+                {
+                    _mainWindow.Show();
+                    _mainWindow.Focus();
+                }
             }
+            catch { }
         }
         public static void CloseAllWindows()
         {
             _tinyWindow?.Close();
             _mainWindow?.Close();
+            Environment.Exit(0);
         }
 
     }
