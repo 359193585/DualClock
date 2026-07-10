@@ -5,7 +5,7 @@ namespace DualClock.Modules
 {
     public static class MacOSAutoStart
     {
-        #region 常量和路径
+        #region 常量 路径 和 私有方法
         private static readonly string LaunchAgentsDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
             "Library/LaunchAgents"
@@ -88,6 +88,8 @@ namespace DualClock.Modules
                     System.Diagnostics.Process.Start("/bin/bash", unloadCmd);
                     File.Delete(plistFilePath);
                 }
+                // 清理旧的错误文件（如禁用时仍存在）
+                CleanOldPlist(appName);
             }
             catch 
             {
