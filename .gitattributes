@@ -1,2 +1,2 @@
 # 对 PackageMacApp.ps1 强制使用 LF，不做任何自动转换
-PackageMacApp.ps1 text eol=lf
+PackageMacApp.sh text eol=lf

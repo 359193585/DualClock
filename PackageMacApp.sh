@@ -1,5 +1,5 @@
 #!/bin/bash
-# run in wsl2 ubuntu 22.04
+# run in wsl2 ubuntu 22.04 ,do not run in windows powershell
 # 用法: ./PackageMacApp.ps1 [版本号]
 # 如果不指定版本号，将从 arm64 发布目录中提取
 
