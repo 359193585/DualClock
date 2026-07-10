@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DualClock.Controls.AnalogClock"
+             x:Name="Root"
+             Width="200"
+             Height="200">
+    <Canvas x:Name="ClockCanvas">
+        <!-- 表盘背景，尺寸在后台通过 SizeChanged 控制 -->
+        <Ellipse x:Name="FaceEllipse"
+                 Stroke="Black" StrokeThickness="2"/>
+
+        <!-- 时针 -->
+<Path x:Name="HourHand" Stroke="Black" StrokeThickness="5" StrokeLineCap="Round">
+    <Path.Data>
+        <LineGeometry StartPoint="0,0" EndPoint="0,-40" />
+    </Path.Data>
+    <Path.RenderTransform>
+        <RotateTransform Angle="0" CenterX="0" CenterY="0" />
+    </Path.RenderTransform>
+</Path>
+
+<!-- 分针 -->
+<Path x:Name="MinuteHand" Stroke="Black" StrokeThickness="3" StrokeLineCap="Round">
+    <Path.Data>
+        <LineGeometry StartPoint="0,0" EndPoint="0,-60" />
+    </Path.Data>
+    <Path.RenderTransform>
+        <RotateTransform Angle="0" CenterX="0" CenterY="0" />
+    </Path.RenderTransform>
+</Path>
+
+<!-- 秒针 -->
+<Path x:Name="SecondHand" Stroke="Red" StrokeThickness="1.5" StrokeLineCap="Round">
+    <Path.Data>
+        <LineGeometry StartPoint="0,0" EndPoint="0,-65" />
+    </Path.Data>
+    <Path.RenderTransform>
+        <RotateTransform Angle="0" CenterX="0" CenterY="0" />
+    </Path.RenderTransform>
+</Path>
+
+        <!-- 中心点 -->
+        <Ellipse x:Name="CenterDot" Width="8" Height="8" Fill="Black" />
+
+        <!-- 日期文本 -->
+        <TextBlock x:Name="DateText" Foreground="Black" FontSize="12" FontWeight="Bold" />
+    </Canvas>
+</UserControl>

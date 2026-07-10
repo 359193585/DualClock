@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualClock", "DualClock\Dual
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
@@ -17,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "publish", "publish", "{7AD8
 		make.md = make.md
 		make_release.ps1 = make_release.ps1
 		version_patch.txt = version_patch.txt
-		PackageMacApp.ps1 = PackageMacApp.ps1
+		PackageMacApp.sh = PackageMacApp.sh
 	EndProjectSection
 EndProject
 Global

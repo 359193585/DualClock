@@ -34,15 +34,18 @@ namespace DualClock
                 var startWindow = config.PrgSet.StartWindow; // 0=主窗口, 1=小窗
 
                 Window mainWindow;
-                if (startWindow == 1)
+                switch (startWindow)
                 {
-                    mainWindow = WindowManager.GetOrCreateTinyWindow();
+                    case 1:
+                        mainWindow = new TinyWindow();
+                        break;
+                    case 2:
+                        mainWindow = new AnalogWindow();
+                        break;
+                    default:
+                        mainWindow = new MainWindow(); // 默认启动主窗口
+                        break;
                 }
-                else
-                {
-                    mainWindow = WindowManager.GetOrCreateMainWindow(); // 默认启动主窗口
-                }
-
                 desktop.MainWindow = mainWindow;
             }
 
