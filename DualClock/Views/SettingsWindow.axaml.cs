@@ -124,8 +124,15 @@ public partial class SettingsWindow : Window
         config.PrgSet.ShowSeconds = CheckShowSeconds.IsChecked == true;
 
         config.Save();
-
         ConfigUpdated?.Invoke();
+
+        // ===== 应用开机启动设置 =====
+        string appName = "DualClock"; 
+        if (config.PrgSet.AutoStart)
+            AutoStartManager.Enable(appName);
+        else
+            AutoStartManager.Disable(appName);
+
         Close();
     }
 
