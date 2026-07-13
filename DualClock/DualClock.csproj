@@ -5,13 +5,9 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>  
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+      <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Assets\about.ico" />
-    <None Remove="Assets\exit.ico" />
-    <None Remove="Assets\settings.ico" />
-  </ItemGroup>
   
   <ItemGroup>
 	  <AvaloniaResource Include="Assets\*.png" />
@@ -31,10 +27,6 @@
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
