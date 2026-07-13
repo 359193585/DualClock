@@ -27,7 +27,7 @@
                           ShowHourNumbers="True"
                           ShowMinuteTicks="True"
                           DateFormat="MonthDayWeek"
-                          BackgroundBrush="LightBlue"
+                          BackgroundBrush="LightYellow"
                           TickColor="DarkBlue"
                           TickThickness="4"
                           MinuteTickColor="Gray"
