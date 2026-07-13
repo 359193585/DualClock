@@ -83,8 +83,9 @@
                 <ComboBox Name="ComboStartWindow" 
                           Width="120" 
                           Foreground="White">
-                    <ComboBoxItem>主窗口</ComboBoxItem>
-                    <ComboBoxItem>小窗</ComboBoxItem>
+                    <ComboBoxItem>FullWindow</ComboBoxItem>
+                    <ComboBoxItem>Tinywindow</ComboBoxItem>
+                    <ComboBoxItem>AnalogClock</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
 

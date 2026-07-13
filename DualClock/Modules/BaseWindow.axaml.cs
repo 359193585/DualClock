@@ -1,25 +1,61 @@
-﻿// BaseWindow.axaml.cs
+// BaseWindow.axaml.cs
+using System;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using DualClock.Views;
-using System;
 
 namespace DualClock
 {
     public class BaseWindow : Window
     {
+
         public BaseWindow()
         {
-            ContextMenu globalMenu = CreateContentMenu();
-
-            this.ContextMenu = globalMenu;
             this.Icon = App.AppIcon;
+
+            ContextMenu globalMenu = CreateContentMenu();
+            this.ContextMenu = globalMenu;
+
+            ApplyBackgroundFallback();
+            if (EnableDrag)
+            {
+                this.PointerPressed += OnPointerPressed;
+            }
+
         }
 
+        #region ==== 窗体的图标管理 ====
+        private Image? LoadIcon(string fileName)
+        {
+            try
+            {
+                var uri = new Uri($"avares://DualClock/Assets/{fileName}");
+                if (!AssetLoader.Exists(uri))
+                    return null;
+
+                using var stream = AssetLoader.Open(uri);
+                return new Image
+                {
+                    Source = new Bitmap(stream),
+                    Width = 16,
+                    Height = 16,
+                    Margin = new Thickness(0, 0, 4, 0)
+                };
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region ==== 全局菜单事件处理 ====
         private ContextMenu CreateContentMenu()
         {
             var globalMenu = new ContextMenu();
@@ -57,30 +93,6 @@ namespace DualClock
             globalMenu.Items.Add(itemExit);
             return globalMenu;
         }
-
-        private Image? LoadIcon(string fileName)
-        {
-            try
-            {
-                var uri = new Uri($"avares://DualClock/Assets/{fileName}");
-                if (!AssetLoader.Exists(uri))
-                    return null;
-
-                using var stream = AssetLoader.Open(uri);
-                return new Image
-                {
-                    Source = new Bitmap(stream),
-                    Width = 16,
-                    Height = 16,
-                    Margin = new Thickness(0, 0, 4, 0)
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         private async void OnGlobalAboutClicked(object? sender, EventArgs e)
         {
             var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
@@ -115,10 +127,102 @@ namespace DualClock
         {
             Environment.Exit(0);
         }
+
+        #endregion
+
+        #region ==== 窗体拖拽 ====
+        private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            {
+                this.BeginMoveDrag(e);
+            }
+        }
+        #endregion
+
+        #region ==== 背景透明兼容处理 ====
+        private void ApplyBackgroundFallback()
+        {
+            if (!ShouldApplyBackgroundFallback) return;
+
+            if (OperatingSystem.IsMacOS() || IsUOS())
+            {
+                this.Background = new SolidColorBrush(Color.Parse("#333333"));
+            }
+        }
+        private static bool IsUOS()
+        {
+            try
+            {
+                var osReleasePath = "/etc/os-release";
+                if (File.Exists(osReleasePath))
+                {
+                    var lines = File.ReadAllLines(osReleasePath);
+                    foreach (var line in lines)
+                    {
+                        if (line.StartsWith("ID=", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var id = line.Substring(3).Trim('"');
+                            return id == "uos" || id == "deepin";
+                        }
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
+        #endregion
+
+        #region ==== 键盘事件处理 ====
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Handled) return;
+
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    // 退出全屏 / 关闭窗口
+                    if (WindowState == WindowState.FullScreen)
+                    {
+                        WindowState = WindowState.Normal;
+                        Cursor = Cursor.Default;
+                    }
+                    else
+                    {
+                        Close();
+                    }
+                    e.Handled = true;
+                    break;
+
+                case Key.F:
+                    OnFKeyPressed();
+                    e.Handled = true;
+                    break;
+
+                case Key.T:
+                    WindowManager.ToggleTinyWindow(this);
+                    e.Handled = true;
+                    break;
+
+                case Key.A:
+                    WindowManager.ToggleAnalogWindow(this);
+                    e.Handled = true;
+                    break;
+            }
+        }
+        #endregion
+
+        #region ==== 可被子类重写的配置 ====
+        protected virtual bool EnableDrag => true;
+        protected virtual bool ShouldApplyBackgroundFallback => true;
         protected virtual void OnConfigUpdated()
         {
         }
+        protected virtual void OnFKeyPressed()
+        {
+        }
+        #endregion
 
-        
     }
 }

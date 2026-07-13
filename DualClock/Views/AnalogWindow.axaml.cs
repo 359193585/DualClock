@@ -1,11 +1,12 @@
+using System;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Threading;
 using DualClock.Controls;
-using System;
 
-namespace DualClock.Views
+namespace DualClock
 {
-    public partial class AnalogWindow : Window
+    public partial class AnalogWindow : BaseWindow
     {
         private DispatcherTimer _timer;
 
@@ -13,7 +14,7 @@ namespace DualClock.Views
         {
             InitializeComponent();
 
-            // ³õÊ¼»¯Ê±¼äºÍ¶¨Ê±Æ÷
+            // åˆå§‹åŒ–æ—¶é—´å’Œå®šæ—¶å™¨
             UpdateTime();
 
             _timer = new DispatcherTimer
@@ -23,16 +24,34 @@ namespace DualClock.Views
             _timer.Tick += (s, e) => UpdateTime();
             _timer.Start();
 
-            // ´°¿Ú¹Ø±ÕÊ±Í£Ö¹¶¨Ê±Æ÷
-            this.Closed += (s, e) => _timer.Stop();
+            // çª—å£å…³é—­æ—¶
+            this.Closed += (s, e) =>
+            {
+                WindowManager.OnOtherWindowClosed();
+                _timer.Stop();
+            };
         }
 
         private void UpdateTime()
         {
             var now = DateTime.Now;
-            // ¸üÐÂ±íÅÌ
+            // æ›´æ–°è¡¨ç›˜
             AnalogClockControl.Time = now;
             
+        }
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.A)
+            {
+                e.Handled = true;
+                return;
+            }
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnFKeyPressed()
+        {
+            WindowManager.ShowMainFullScreenAndHideCurrent(this);
         }
     }
 }

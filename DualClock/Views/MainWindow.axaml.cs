@@ -31,7 +31,7 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
 
     public new event PropertyChangedEventHandler? PropertyChanged;
 
-    #region ÊôÐÔ¹«¿ª¸ø XAML °ó¶¨
+    #region å±žæ€§å…¬å¼€ç»™ XAML ç»‘å®š
     public string SfCityDisplay
     {
         get => _sfCityDisplay;
@@ -92,16 +92,16 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         }
         else
         {
-            // Éè¼ÆÆ÷Ô¤ÀÀ
-            SfCityDisplay = "ÃÀ¹úÎ÷²¿ÍåÇø³ÇÊÐ¾É½ðÉ½";
+            // è®¾è®¡å™¨é¢„è§ˆ
+            SfCityDisplay = "ç¾Žå›½è¥¿éƒ¨æ¹¾åŒºåŸŽå¸‚æ—§é‡‘å±±";
             SfTimeDisplay = "08:00:00";
-            SfDateDisplay = "10ÔÂ24ÈÕ ÐÇÆÚÎå";
+            SfDateDisplay = "10æœˆ24æ—¥ æ˜ŸæœŸäº”";
 
-            BjCityDisplay = "±±¾©";
+            BjCityDisplay = "åŒ—äº¬";
             BjTimeDisplay = "23:00:00";
-            BjDateDisplay = "10ÔÂ24ÈÕ ÐÇÆÚÎå";
+            BjDateDisplay = "10æœˆ24æ—¥ æ˜ŸæœŸäº”";
 
-            LocalTimeDisplay = "±¾µØÊ±¼ä: 2026-06-15 15:00:00";
+            LocalTimeDisplay = "æœ¬åœ°æ—¶é—´: 2026-06-15 15:00:00";
         }
     }
     protected override void OnConfigUpdated()
@@ -117,13 +117,13 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         {
             WinId = "Pacific Standard Time",
             IanaId = "America/Los_Angeles",
-            Label = "¾É½ðÉ½"
+            Label = "æ—§é‡‘å±±"
         };
         var zone2 = zones.Count > 1 ? zones[1] : new TimeZoneItemConfig
         {
             WinId = "China Standard Time",
             IanaId = "Asia/Shanghai",
-            Label = "±±¾©"
+            Label = "åŒ—äº¬"
         };
         _timeZone1 = GetTimeZoneById(zone1.WinId, zone1.IanaId);
         _timeZone2 = GetTimeZoneById(zone2.WinId, zone2.IanaId);
@@ -144,10 +144,10 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
         BjTimeDisplay = $"{t2:HH:mm:ss}";
 
         var culture = new CultureInfo("zh-CN");
-        SfDateDisplay = t1.ToString("MMÔÂddÈÕ dddd", culture);
-        BjDateDisplay = t2.ToString("MMÔÂddÈÕ dddd", culture);
+        SfDateDisplay = t1.ToString("MMæœˆddæ—¥ dddd", culture);
+        BjDateDisplay = t2.ToString("MMæœˆddæ—¥ dddd", culture);
 
-        LocalTimeDisplay = $"±¾µØÊ±¼ä: {localNow:yyyy-MM-dd HH:mm:ss}";
+        LocalTimeDisplay = $"æœ¬åœ°æ—¶é—´: {localNow:yyyy-MM-dd HH:mm:ss}";
     }
     private void MenuClose(object sender, RoutedEventArgs e) => Close();
     private static TimeZoneInfo GetTimeZoneById(string windowsId, string ianaId)
@@ -182,42 +182,55 @@ public partial class MainWindow : BaseWindow, INotifyPropertyChanged
     }
     //  ESC, f event to exit full screen or close the app ,this handleed in basewindow
     // now hadle T to show tinywindow
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-        base.OnKeyDown(e);
-        if (e.Handled) return;
-        if (e.Key == Key.Escape)
-        {
-            if (WindowState == WindowState.FullScreen)
-            {
-                WindowState = WindowState.Normal;
-                Cursor = Cursor.Default;
-            }
-            else
-            {
-                WindowManager.CloseAllWindows();
+    //protected override void OnKeyDown(KeyEventArgs e)
+    //{
+    //    base.OnKeyDown(e);
+    //    if (e.Handled) return;
+    //    if (e.Key == Key.Escape)
+    //    {
+    //        if (WindowState == WindowState.FullScreen)
+    //        {
+    //            WindowState = WindowState.Normal;
+    //            Cursor = Cursor.Default;
+    //        }
+    //        else
+    //        {
+    //            WindowManager.CloseAllWindows();
 
-            }
-            e.Handled = true;
-        }
-        else if (e.Key == Key.F)
+    //        }
+    //        e.Handled = true;
+    //    }
+    //    else if (e.Key == Key.F)
+    //    {
+    //        if (WindowState == WindowState.FullScreen)
+    //        {
+    //            WindowState = WindowState.Normal;
+    //            Cursor = Cursor.Default;
+    //        }
+    //        else
+    //        {
+    //            WindowState = WindowState.FullScreen;
+    //            Cursor = new Cursor(StandardCursorType.None);
+    //        }
+    //        e.Handled = true;
+    //    }
+    //    else if (e.Key == Key.T)
+    //    {
+    //        WindowManager.ToggleTinyWindow(this);
+    //        e.Handled = true;
+    //    }
+    //}
+    protected override void OnFKeyPressed()
+    {
+        if (WindowState == WindowState.FullScreen)
         {
-            if (WindowState == WindowState.FullScreen)
-            {
-                WindowState = WindowState.Normal;
-                Cursor = Cursor.Default;
-            }
-            else
-            {
-                WindowState = WindowState.FullScreen;
-                Cursor = new Cursor(StandardCursorType.None);
-            }
-            e.Handled = true;
+            WindowState = WindowState.Normal;
+            Cursor = Cursor.Default;
         }
-        else if (e.Key == Key.T)
+        else
         {
-            WindowManager.ToggleTinyWindow(this);
-            e.Handled = true;
+            WindowState = WindowState.FullScreen;
+            Cursor = new Cursor(StandardCursorType.None);
         }
     }
 

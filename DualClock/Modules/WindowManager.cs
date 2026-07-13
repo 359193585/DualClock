@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Input;
 using System;
 
@@ -8,6 +8,7 @@ namespace DualClock
     {
         private static MainWindow? _mainWindow;
         private static TinyWindow? _tinyWindow;
+        private static AnalogWindow? _analogWindow;
 
         // 获取或创建主窗口
         public static MainWindow GetOrCreateMainWindow()
@@ -21,20 +22,38 @@ namespace DualClock
             return _mainWindow;
         }
 
-        // 获取或创建小窗
-        public static TinyWindow GetOrCreateTinyWindow()
+        // 通用的切换逻辑
+        private static void ToggleWindow<T>(ref T? window, Window current, Func<T> create) where T : Window
         {
-            if (_tinyWindow == null )
+            var target = window ?? create();
+            if (target.IsVisible)
             {
-                _tinyWindow = new TinyWindow();
-                _tinyWindow.Closed += (s, e) => _tinyWindow = null;
+                // 隐藏目标，显示主窗口
+                target.Hide();
+                var main = GetOrCreateMainWindow();
+                if (!main.IsVisible) main.Show();
+                main.Focus();
             }
-            return _tinyWindow;
+            else
+            {
+                // 隐藏当前窗口（如果当前不是目标）
+                if (current != target && current.IsVisible)
+                    current.Hide();
+                target.Show();
+                target.Focus();
+            }
         }
 
-        // 显示主窗口并全屏
-        public static void ShowMainWindowFullScreen()
+        public static void ToggleTinyWindow(Window current)
+            => ToggleWindow(ref _tinyWindow, current, () => new TinyWindow());
+
+        public static void ToggleAnalogWindow(Window current)
+            => ToggleWindow(ref _analogWindow, current, () => new AnalogWindow());
+
+        public static void ShowMainFullScreenAndHideCurrent(Window current)
         {
+            if (current != null && current.IsVisible)
+                current.Hide();
             var main = GetOrCreateMainWindow();
             main.Show();
             if (main.WindowState != WindowState.FullScreen)
@@ -44,35 +63,9 @@ namespace DualClock
             }
             main.Focus();
         }
-
-        // 切换小窗显隐（由 MainWindow 调用）
-        public static void ToggleTinyWindow(MainWindow caller)
-        {
-            var tiny = GetOrCreateTinyWindow();
-
-            if (tiny.IsVisible)
-            {
-                // 隐藏小窗，显示主窗口
-                tiny.Hide();
-                // 如果调用方主窗口已经隐藏，则显示它
-                if (!caller.IsVisible)
-                {
-                    caller.Show();
-                    caller.Focus();
-                }
-            }
-            else
-            {
-                // 显示小窗，隐藏主窗口
-                tiny.Topmost = true;
-                tiny.ShowInTaskbar = false;
-                tiny.Show();
-                caller.Hide();
-            }
-        }
-
-        // 当 TinyWindow 被关闭时，尝试显示主窗口
-        public static void OnTinyWindowClosed()
+      
+        // 当 TinyWindow等被关闭时，尝试显示主窗口
+        public static void OnOtherWindowClosed()
         {
             try
             {
