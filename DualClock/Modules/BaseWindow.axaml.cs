@@ -28,6 +28,14 @@ namespace DualClock
                 this.PointerPressed += OnPointerPressed;
             }
 
+            // tooltip on mouse hover
+            if (EnableTooltip)
+            {
+                ToolTip.SetTip(this, TooltipText);
+                ToolTip.SetPlacement(this, PlacementMode.Bottom);
+                ToolTip.SetShowDelay(this, 800);
+            }
+
         }
 
         #region ==== 窗体的图标管理 ====
@@ -219,6 +227,8 @@ namespace DualClock
         protected virtual void OnConfigUpdated()
         {
         }
+        protected virtual bool EnableTooltip => false;
+        protected virtual string TooltipText => "按 F 全屏，T 置顶小窗， A 表盘，ESC 退出，右键单击显示菜单";
         protected virtual void OnFKeyPressed()
         {
         }

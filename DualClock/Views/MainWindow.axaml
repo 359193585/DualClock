@@ -83,7 +83,7 @@
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
 
-        <TextBlock Grid.Row="5" Text="[按 F 全屏，T 置顶小窗， A 表盘，ESC 退出，右键单击显示菜单  ]" 
+        <TextBlock Grid.Row="5" Text="[ 按 F 全屏，T 置顶小窗， A 表盘，ESC 退出，右键单击显示菜单 ]" 
                    Foreground="DimGray" 
                    FontFamily="Arial, Microsoft YaHei, DejaVu Sans"
                    FontSize="22" 

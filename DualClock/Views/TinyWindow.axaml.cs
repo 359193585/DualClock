@@ -23,6 +23,9 @@ public partial class TinyWindow : BaseWindow
     private ClockItem _localClock = null!;
     private SecondItem _secondItem = null!;
 
+    protected override bool EnableTooltip => true;
+    protected override string TooltipText => "F 显示主窗全屏，A 表盘";
+
     public TinyWindow()
     {
         InitializeComponent();

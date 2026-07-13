@@ -13,7 +13,8 @@ namespace DualClock
         private DispatcherTimer _timer;
         private string _currentTime = DateTime.Now.ToString("HH:mm:ss");
         public new event PropertyChangedEventHandler? PropertyChanged;
-
+        protected override bool EnableTooltip => true;
+        protected override string TooltipText => "F 显示主窗全屏，T 小窗";
         public string CurrentTime
         {
             get => _currentTime;
