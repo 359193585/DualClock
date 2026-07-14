@@ -52,8 +52,9 @@ namespace DualClock
         }
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.A)
+            if (e.Key == Key.A || e.Key == Key.Escape)
             {
+                // 不响应 A Escape 键
                 e.Handled = true;
                 return;
             }

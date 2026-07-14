@@ -286,9 +286,9 @@ public partial class TinyWindow : BaseWindow
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        if (e.Key == Key.T)
+        if (e.Key == Key.T || e.Key == Key.Escape)
         {
-            // 不响应 T 键
+            // 不响应 T Escape 键
             e.Handled = true;
             return;
         }
