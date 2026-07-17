@@ -1,3 +1,4 @@
+//TinyWindow.axaml.cs
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -256,21 +257,6 @@ public partial class TinyWindow : BaseWindow
         };
     }
   
-    //protected override void OnKeyDown(KeyEventArgs e)
-    //{
-    //    if (e.Key == Key.F)
-    //    {
-    //        this.Hide();
-    //        WindowManager.ShowMainWindowFullScreen();
-    //        e.Handled = true;
-    //    }
-    //    else if (e.Key == Key.A)
-    //    {
-    //        this.Hide();
-    //        WindowManager.ShowMainWindowAnalogClock();
-    //        e.Handled = true;
-    //    }
-    //}
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);

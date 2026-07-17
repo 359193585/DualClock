@@ -18,6 +18,10 @@
         ShowInTaskbar="False"
         >
 
+   <Window.Resources>
+        <SolidColorBrush x:Key="ClockFaceColor" Color="#F0E68C" /> <!-- 同 LightYellow -->
+    </Window.Resources>
+
     <StackPanel Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
 
 
@@ -28,7 +32,7 @@
                           ShowHourNumbers="True"
                           ShowMinuteTicks="True"
                           DateFormat="MonthDayWeek"
-                          BackgroundBrush="LightYellow"
+                          BackgroundBrush="{DynamicResource ClockFaceColor}"
                           TickColor="DarkBlue"
                           TickThickness="4"
                           MinuteTickColor="Gray"

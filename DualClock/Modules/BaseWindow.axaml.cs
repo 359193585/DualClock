@@ -22,7 +22,8 @@ namespace DualClock
             ContextMenu globalMenu = CreateContentMenu();
             this.ContextMenu = globalMenu;
 
-            ApplyBackgroundFallback();
+            this.Loaded += (s, e) => ApplyBackgroundFallback();
+
             if (EnableDrag)
             {
                 this.PointerPressed += OnPointerPressed;
@@ -149,7 +150,7 @@ namespace DualClock
         #endregion
 
         #region ==== 背景透明兼容处理 ====
-        private void ApplyBackgroundFallback()
+        protected virtual void ApplyBackgroundFallback()
         {
             if (!ShouldApplyBackgroundFallback) return;
 
@@ -158,7 +159,7 @@ namespace DualClock
                 this.Background = new SolidColorBrush(Color.Parse("#333333"));
             }
         }
-        private static bool IsUOS()
+        protected static bool IsUOS()
         {
             try
             {
