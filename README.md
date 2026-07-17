@@ -23,7 +23,8 @@
 
 </div>
 
-
+# 为提高下载速度，relese版本会在  [https://gitee.com/leison01010101/DualClock](https://gitee.com/leison01010101/DualClock) 上发布。To improve download speed, release versions will be published on  [https://gitee.com/leison01010101/DualClock](https://gitee.com/leison01010101/DualClock) 
+ 
 # 注意  Note：
 🛡️ macOS 版程序没有数字签名，如果你从[github release](https://github.com/359193585/DualClock/releases/tag/v2.1.0) 下载了该 tar.gz 包，解压后，macOS会系统会自动给该文件添加一个名为 com.apple.quarantine 的扩展属性，即“来源不明”的标签。The macOS version of the program is not digitally signed. If you downloaded the tar.gz package from the GitHub Release, after extraction, macOS will automatically add an extended attribute named com.apple.quarantine to the file, which is the "unknown origin" tag.
 - 当你尝试运行带有此标签的应用时，Gatekeeper 会进行更严格的安全检查。When you try to run an application with this tag, Gatekeeper will perform stricter security checks.
