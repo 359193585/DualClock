@@ -179,12 +179,21 @@ namespace DualClock.Controls
             }
 
             // 3. 指针定位：支点在 (0,0)，所以左上角置于中心
-            Canvas.SetLeft(_hourHand, centerX);
-            Canvas.SetTop(_hourHand, centerY);
-            Canvas.SetLeft(_minuteHand, centerX);
-            Canvas.SetTop(_minuteHand, centerY);
-            Canvas.SetLeft(_secondHand, centerX);
-            Canvas.SetTop(_secondHand, centerY);
+            if (_hourHand != null)
+            {
+                Canvas.SetLeft(_hourHand, centerX);
+                Canvas.SetTop(_hourHand, centerY);
+            }
+            if (_minuteHand != null)
+            {
+                Canvas.SetLeft(_minuteHand, centerX);
+                Canvas.SetTop(_minuteHand, centerY);
+            }
+            if (_secondHand != null)
+            {
+                Canvas.SetLeft(_secondHand, centerX);
+                Canvas.SetTop(_secondHand, centerY);
+            }
 
             // 4. 中心点大小按比例缩放
             if (_centerDot != null)

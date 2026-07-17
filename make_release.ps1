@@ -32,7 +32,7 @@ Write-Host "=== 发布 DualClock $version ===" -ForegroundColor Green
     #$runtimes = @( "linux-x64")
     # $runtimes = @( "linux-x64", "linux-arm64")
     # $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-arm64")
-    # $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-x64","osx-arm64")
+     $runtimes = @("win-x64", "linux-x64", "linux-arm64","osx-x64","osx-arm64")
 
 foreach ($rid in $runtimes) {
         Write-Host "`n=== 正在发布 $rid ===" -ForegroundColor Cyan
