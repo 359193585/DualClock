@@ -21,14 +21,14 @@ public partial class AboutWindow : Window
         var assembly = Assembly.GetExecutingAssembly();
         var version = assembly.GetName().Version;
         var versionString = version != null
-            ? $"版本 {version.Major}.{version.Minor}.{version.Build}"
-            : "版本 2.0.0";
+            ? $"鐗堟湰 {version.Major}.{version.Minor}.{version.Build}"
+            : "鐗堟湰 2.0.0";
 
-        // 如果希望显示更详细的 InformationalVersion，可以这样：
+        // 濡傛灉甯屾湜鏄剧ず鏇磋缁嗙殑 InformationalVersion锛屽彲浠ヨ繖鏍凤細
         //var infoVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
         //if (!string.IsNullOrEmpty(infoVersion))
         //{
-        //    versionString = infoVersion; // 例如 "2.0.23-beta+sha.abc123"
+        //    versionString = infoVersion; // 渚嬪 "2.0.23-beta+sha.abc123"
         //}
         return versionString;
     }
