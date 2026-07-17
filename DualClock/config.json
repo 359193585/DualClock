@@ -1,6 +1,6 @@
 {
   "PrgSet": {
-    "StartWindow": 0,
+    "StartWindow": 1,
     "AutoStart": false,
     "ShowSeconds": true
   },

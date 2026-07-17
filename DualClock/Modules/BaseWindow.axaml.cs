@@ -1,6 +1,7 @@
 // BaseWindow.axaml.cs
 using System;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -104,12 +105,17 @@ namespace DualClock
         }
         private async void OnGlobalAboutClicked(object? sender, EventArgs e)
         {
-            var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            var mainWindow = lifetime?.MainWindow;
-            if (mainWindow != null)
+            try
             {
+                var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+                var owner = lifetime?.Windows.FirstOrDefault(w => w.IsVisible);
+                if (owner == null) return;
                 var aboutWindow = new AboutWindow();
-                await aboutWindow.ShowDialog(mainWindow);
+                await aboutWindow.ShowDialog(owner);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"About dialog error: {ex.Message}");
             }
         }
         private void OnGlobalSettingsClicked(object? sender, EventArgs e)
