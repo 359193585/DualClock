@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DualClock
+Comment=多时区时钟
+Exec=sh -c "cd \"$(dirname %k)\" && ./DualClock"
+Icon=icon.png
+Terminal=false
+StartupWMClass=DualClock
