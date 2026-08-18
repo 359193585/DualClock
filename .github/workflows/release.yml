@@ -53,8 +53,8 @@ jobs:
           Write-Host "Building version: $version"
           #  publish command ...
           $rid = "${{ matrix.rid }}"
-          $projFolder = "PdfPigBundle"
-          $projName = "PDFMerger"
+          $projFolder = "DualClock"
+          $projName = "DualClock"
           $baseOutput = "publish/${projName}.${version}.${rid}"
           $bundledOutput = "publish/${projName}.${version}.${rid}-bundled"
 
@@ -100,7 +100,7 @@ jobs:
         run: |
           $version = "${{ env.VERSION }}"
           $rid = "${{ matrix.rid }}"
-          $projName = "PDFMerger"
+          $projName = "DualClock"
           $dirs = @(
             "publish/${projName}.${version}.${rid}",
             "publish/${projName}.${version}.${rid}-bundled"
