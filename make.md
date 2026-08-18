@@ -1,4 +1,4 @@
-﻿
+
 To publish the DualClock application for Linux ARM64, you can use the following command in your terminal:
 ```bash
 dotnet publish -c Release -r linux-arm64 --self-contained true /p:PublishSingleFile=true
@@ -27,3 +27,6 @@ This command will create a self-contained single file executable for the Linux x
 - 
 
 
+git tag -a v2.1.20 -m "test github action " && git push origin v2.1.20
+
+git tag -d v2.1.20 && git push origin --delete v2.1.20
