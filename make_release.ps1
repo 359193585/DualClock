@@ -34,8 +34,8 @@ else {
     }
     $patch++
     Set-Content $patchFile $patch
-    $major = 1
-    $minor = 2
+    $major = 2
+    $minor = 1
     $version = "$major.$minor.$patch"
     $assemblyVersion = "$major.$minor.$patch.0"
     [System.IO.File]::WriteAllText((New-Item -Path "version_patch.txt" -Force), $patch.ToString())
